@@ -1,0 +1,1919 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsightsFlow — Convierte la información de Siigo Nube en decisiones claras</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── TOKENS — Colores exactos del branding InsightsFlow ──── */
+    :root {
+      --navy:       #0D1B2E;   /* fondo principal azul marino oscuro */
+      --navy-mid:   #0F2442;   /* cards / secciones */
+      --navy-light: #1A3A5C;   /* bordes, hover */
+      --blue:       #2563EB;   /* acento principal azul eléctrico */
+      --blue-bright:#3B82F6;   /* texto destacado, links */
+      --blue-glow:  rgba(37,99,235,0.25);
+      --mint:       #10B981;   /* accent secundario verde (gráficas) */
+      --orange:     #F59E0B;   /* alertas / caja */
+      --red:        #EF4444;   /* indicadores negativos */
+      --white:      #FFFFFF;
+      --gray-100:   #E2E8F0;
+      --gray-400:   #94A3B8;
+      --gray-600:   #64748B;
+
+      --ff: 'Inter', sans-serif;
+      --r-sm: 8px;
+      --r-md: 14px;
+      --r-lg: 20px;
+      --r-xl: 28px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--ff);
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* ── DOT PATTERN (como en el branding) ──────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(37,99,235,0.15) 1px, transparent 1px);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    * { position: relative; z-index: 1; }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 48px;
+      background: rgba(13,27,46,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(37,99,235,0.2);
+    }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 1.2rem; font-weight: 700;
+      color: var(--white);
+    }
+
+    /* Logo icon — barras de InsightsFlow */
+    .logo-icon {
+      display: flex; align-items: flex-end; gap: 3px; height: 22px;
+    }
+    .logo-icon span {
+      display: block; border-radius: 3px; width: 5px;
+    }
+    .logo-icon .b1 { height: 10px; background: #60A5FA; }
+    .logo-icon .b2 { height: 16px; background: #3B82F6; }
+    .logo-icon .b3 { height: 22px; background: #2563EB; }
+    .logo-icon .b4 { height: 14px; background: #7C3AED; }
+
+    .nav-logo .flow { color: var(--blue-bright); }
+
+    .nav-cta {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-family: var(--ff);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+    }
+    .nav-cta:hover { background: #1D4ED8; transform: translateY(-1px); }
+
+    /* ── HERO ─────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 60px;
+      padding: 120px 64px 80px;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .hero-left { display: flex; flex-direction: column; gap: 28px; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.4);
+      border-radius: 50px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--blue-bright);
+      letter-spacing: 0.04em;
+      width: fit-content;
+    }
+    .badge-dot {
+      width: 6px; height: 6px;
+      background: var(--mint);
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+    @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+    h1 {
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      color: var(--white);
+    }
+    h1 .highlight { color: var(--blue-bright); }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--gray-400);
+      line-height: 1.75;
+      font-weight: 400;
+    }
+    .hero-sub strong { color: var(--blue-bright); font-weight: 600; }
+
+    /* Feature icons row */
+    .feat-icons {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .feat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      min-width: 70px;
+    }
+    .feat-item .icon-wrap {
+      width: 48px; height: 48px;
+      border: 1px solid rgba(37,99,235,0.4);
+      border-radius: 12px;
+      background: rgba(37,99,235,0.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .feat-item span {
+      font-size: 0.7rem;
+      color: var(--gray-400);
+      text-align: center;
+      line-height: 1.3;
+    }
+
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .btn-primary {
+      background: var(--blue);
+      color: var(--white);
+      border: none;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: var(--ff);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover {
+      background: #1D4ED8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px var(--blue-glow);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--blue-bright);
+      border: 1px solid rgba(37,99,235,0.5);
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-family: var(--ff);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--blue); background: rgba(37,99,235,0.08); }
+
+    .siigo-note {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: var(--r-md);
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: var(--gray-400);
+    }
+    .siigo-note strong { color: var(--mint); }
+
+    /* ── HERO RIGHT: Mock dashboard ──────────────────────────── */
+    .hero-right { position: relative; }
+
+    .dashboard-mock {
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(37,99,235,0.1);
+    }
+
+    .dash-topbar {
+      background: rgba(15,36,66,0.8);
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(37,99,235,0.15);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dash-topbar .live-badge {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.65rem;
+      color: var(--mint);
+    }
+    .dash-topbar .live-badge::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--mint);
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .dash-kpis {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      border-bottom: 1px solid rgba(37,99,235,0.1);
+    }
+    .kpi {
+      padding: 14px 12px;
+      border-right: 1px solid rgba(37,99,235,0.1);
+    }
+    .kpi:last-child { border-right: none; }
+    .kpi-label {
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 6px;
+    }
+    .kpi-val {
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .kpi-val.blue  { color: var(--blue-bright); }
+    .kpi-val.green { color: var(--mint); }
+    .kpi-val.amber { color: var(--orange); }
+    .kpi-val.red   { color: var(--red); }
+
+    .kpi-delta {
+      font-size: 0.6rem;
+      margin-top: 3px;
+      color: var(--gray-600);
+    }
+    .kpi-delta.up { color: var(--mint); }
+    .kpi-delta.down { color: var(--red); }
+
+    .dash-charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(37,99,235,0.1);
+    }
+    .chart-box {
+      background: var(--navy-mid);
+      padding: 14px;
+    }
+    .chart-title {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--gray-600);
+      margin-bottom: 10px;
+    }
+
+    /* Mini bar chart */
+    .mini-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 52px;
+    }
+    .mini-bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: var(--blue);
+      opacity: 0.8;
+    }
+
+    /* Mini indicators list */
+    .mini-list { display: flex; flex-direction: column; gap: 6px; }
+    .mini-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.65rem;
+    }
+    .mini-row .name { color: var(--gray-400); }
+    .mini-row .val  { font-weight: 600; color: var(--white); }
+    .mini-row .trend { color: var(--mint); font-size: 0.6rem; }
+
+    /* ── LOGOS BAND ──────────────────────────────────────────── */
+    .logos-band {
+      border-top: 1px solid rgba(37,99,235,0.15);
+      border-bottom: 1px solid rgba(37,99,235,0.15);
+      padding: 28px 64px;
+      text-align: center;
+      background: rgba(15,36,66,0.4);
+    }
+    .logos-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gray-600);
+      margin-bottom: 18px;
+    }
+    .logos-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      opacity: 0.4;
+    }
+    .logo-co {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── SECTIONS ────────────────────────────────────────────── */
+    .section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 90px 64px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 14px;
+    }
+
+    h2 {
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--gray-400);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* Features grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 52px;
+    }
+
+    .feat-card {
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.18);
+      border-radius: var(--r-lg);
+      padding: 28px 26px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feat-card:hover {
+      border-color: rgba(37,99,235,0.5);
+      transform: translateY(-3px);
+    }
+    .feat-card-icon {
+      width: 44px; height: 44px;
+      border-radius: 10px;
+      background: rgba(37,99,235,0.15);
+      border: 1px solid rgba(37,99,235,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+    }
+    .feat-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--white);
+    }
+    .feat-card p {
+      font-size: 0.875rem;
+      color: var(--gray-400);
+      line-height: 1.65;
+    }
+
+    /* ── STATS ───────────────────────────────────────────────── */
+    .stats-band {
+      background: rgba(15,36,66,0.6);
+      border-top: 1px solid rgba(37,99,235,0.15);
+      border-bottom: 1px solid rgba(37,99,235,0.15);
+      padding: 60px 64px;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--blue-bright);
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--gray-400);
+      margin-top: 6px;
+    }
+
+    /* ── STEPS ───────────────────────────────────────────────── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+      margin-top: 52px;
+      position: relative;
+    }
+    .steps-grid::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(37,99,235,0.4), transparent);
+    }
+    .step {
+      text-align: center;
+      padding: 0 20px 0;
+    }
+    .step-circle {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      border: 2px solid rgba(37,99,235,0.5);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      background: var(--navy-mid);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--blue-bright);
+      position: relative; z-index: 2;
+    }
+    .step h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: 0.82rem; color: var(--gray-400); line-height: 1.6; }
+
+    /* ── TESTIMONIALS ────────────────────────────────────────── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 52px;
+    }
+    .t-card {
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.18);
+      border-radius: var(--r-lg);
+      padding: 28px;
+    }
+    .t-quote {
+      font-size: 0.9rem;
+      color: var(--gray-400);
+      line-height: 1.75;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .t-quote::before { content: '"'; color: var(--blue-bright); font-size: 1.2rem; font-style: normal; }
+    .t-author { display: flex; align-items: center; gap: 12px; }
+    .t-av {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+    }
+    .t-name { font-size: 0.875rem; font-weight: 600; }
+    .t-role { font-size: 0.75rem; color: var(--gray-600); }
+
+    /* ── DEMO / CALENDAR SECTION ─────────────────────────────── */
+    #demo { scroll-margin-top: 80px; }
+
+    .demo-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+      margin-top: 52px;
+    }
+
+    .demo-left h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .demo-left p {
+      font-size: 0.9rem;
+      color: var(--gray-400);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .demo-perks { display: flex; flex-direction: column; gap: 12px; }
+    .perk {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.875rem;
+      color: var(--gray-400);
+    }
+    .perk-check {
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.4);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.65rem;
+      color: var(--mint);
+      margin-top: 1px;
+    }
+
+    /* Calendar embed box */
+    .calendar-box {
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      min-height: 960px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cal-header {
+      background: rgba(15,36,66,0.8);
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(37,99,235,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cal-header-icon {
+      width: 36px; height: 36px;
+      background: rgba(37,99,235,0.2);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .cal-header-text .title { font-size: 0.9rem; font-weight: 700; }
+    .cal-header-text .sub { font-size: 0.72rem; color: var(--gray-400); }
+
+    /* Calendly inline widget — se activa con tu URL */
+    .calendly-inline-widget {
+      flex: 1;
+    }
+
+    /* Placeholder mientras no hay Calendly configurado */
+    .cal-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 40px;
+      text-align: center;
+    }
+    .cal-placeholder .big-icon {
+      font-size: 3rem;
+      opacity: 0.4;
+    }
+    .cal-placeholder h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-400);
+    }
+
+    /* Setup instructions box */
+    .setup-box {
+      background: rgba(37,99,235,0.06);
+      border: 1px dashed rgba(37,99,235,0.35);
+      border-radius: var(--r-md);
+      padding: 20px 24px;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--gray-400);
+      line-height: 1.7;
+    }
+    .setup-box strong { color: var(--white); }
+    .setup-box code {
+      background: rgba(37,99,235,0.18);
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      color: var(--blue-bright);
+    }
+    .setup-box a { color: var(--blue-bright); }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(37,99,235,0.15);
+      padding: 36px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 1rem; font-weight: 700;
+    }
+    .footer-logo .flow { color: var(--blue-bright); }
+    .footer-copy { font-size: 0.78rem; color: var(--gray-600); }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 0.78rem; color: var(--gray-600); text-decoration: none; }
+    .footer-links a:hover { color: var(--blue-bright); }
+
+    /* ── CHAT WIDGET ─────────────────────────────────────────── */
+    .chat-fab {
+      position: fixed; bottom: 24px; right: 24px;
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #7C3AED);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 6px 24px rgba(37,99,235,0.4);
+      z-index: 200;
+      transition: transform 0.2s;
+    }
+    .chat-fab:hover { transform: scale(1.08); }
+
+    .chat-panel {
+      position: fixed; bottom: 88px; right: 24px;
+      width: 352px; max-height: 500px;
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: var(--r-xl);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+      display: flex; flex-direction: column;
+      z-index: 199;
+      overflow: hidden;
+      transform: scale(0.9) translateY(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    .chat-panel.open {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .chat-head {
+      background: rgba(13,27,46,0.95);
+      border-bottom: 1px solid rgba(37,99,235,0.2);
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .chat-head-av {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem;
+    }
+    .chat-head-info .chat-name { font-size: 0.85rem; font-weight: 700; }
+    .chat-head-info .chat-status {
+      font-size: 0.68rem;
+      color: var(--mint);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .chat-head-info .chat-status::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: var(--mint);
+      border-radius: 50%;
+    }
+
+    .chat-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .chat-msgs::-webkit-scrollbar { width: 4px; }
+    .chat-msgs::-webkit-scrollbar-track { background: transparent; }
+    .chat-msgs::-webkit-scrollbar-thumb { background: rgba(37,99,235,0.3); border-radius: 4px; }
+
+    .msg {
+      max-width: 88%;
+      padding: 9px 13px;
+      border-radius: 14px;
+      font-size: 0.83rem;
+      line-height: 1.5;
+    }
+    .msg.bot {
+      background: rgba(37,99,235,0.12);
+      border: 1px solid rgba(37,99,235,0.2);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .msg.user {
+      background: var(--blue);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.loading { opacity: 0.6; font-style: italic; color: var(--gray-400); }
+
+    .chips-row {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      padding: 0 14px 10px;
+    }
+    .chip {
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.3);
+      border-radius: 50px;
+      padding: 5px 11px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      color: var(--blue-bright);
+      font-weight: 500;
+      transition: background 0.15s;
+    }
+    .chip:hover { background: rgba(37,99,235,0.22); }
+
+    .chat-form {
+      padding: 10px 12px;
+      border-top: 1px solid rgba(37,99,235,0.15);
+      display: flex; gap: 8px;
+    }
+    .chat-inp {
+      flex: 1;
+      background: rgba(13,27,46,0.8);
+      border: 1px solid rgba(37,99,235,0.25);
+      border-radius: 50px;
+      padding: 8px 14px;
+      font-family: var(--ff);
+      font-size: 0.82rem;
+      color: var(--white);
+      outline: none;
+    }
+    .chat-inp::placeholder { color: var(--gray-600); }
+    .chat-inp:focus { border-color: var(--blue); }
+    .chat-send-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--blue);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      color: var(--white);
+      flex-shrink: 0;
+    }
+    .chat-send-btn:hover { background: #1D4ED8; }
+
+    /* ── VIDEO LIGHTBOX ──────────────────────────────────────── */
+    .video-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 64px 72px;
+      text-align: center;
+    }
+
+    .video-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--blue-bright);
+      margin-bottom: 14px;
+    }
+
+    .video-heading {
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .video-sub {
+      font-size: 0.92rem;
+      color: var(--gray-400);
+      margin-bottom: 36px;
+    }
+
+    .video-thumb-wrap {
+      position: relative;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid rgba(37,99,235,0.25);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(37,99,235,0.1);
+      background: var(--navy-mid);
+      aspect-ratio: 16/9;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .video-thumb-wrap:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 32px 80px rgba(37,99,235,0.2), 0 0 0 1px rgba(37,99,235,0.3);
+    }
+
+    .video-thumb-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.75);
+      transition: filter 0.2s;
+    }
+    .video-thumb-wrap:hover img { filter: brightness(0.6); }
+
+    .play-btn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: rgba(37,99,235,0.9);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(255,255,255,0.3);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+      box-shadow: 0 8px 32px rgba(37,99,235,0.5);
+    }
+    .video-thumb-wrap:hover .play-btn {
+      transform: translate(-50%, -50%) scale(1.12);
+      background: var(--blue);
+    }
+    .play-btn svg {
+      width: 26px; height: 26px;
+      fill: #fff;
+      margin-left: 4px; /* optical centering */
+    }
+
+    .video-duration-badge {
+      position: absolute;
+      bottom: 14px; right: 16px;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(4px);
+      border-radius: 6px;
+      padding: 3px 9px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Lightbox overlay */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      backdrop-filter: blur(12px);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .lightbox-inner {
+      position: relative;
+      width: min(880px, 92vw);
+      aspect-ratio: 16/9;
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+      transform: scale(0.92);
+      transition: transform 0.25s;
+    }
+    .lightbox.active .lightbox-inner { transform: scale(1); }
+
+    .lightbox-inner iframe {
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: -44px; right: 0;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: #fff;
+      font-size: 1.1rem;
+      transition: background 0.15s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,0.22); }
+
+    @media (max-width: 900px) {
+      .video-section { padding: 0 24px 52px; }
+      .play-btn { width: 56px; height: 56px; }
+    }
+
+    /* ── PAQUETES / PRICING ──────────────────────────────────── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 52px;
+      align-items: start;
+    }
+
+    .plan-card {
+      background: var(--navy-mid);
+      border: 1px solid rgba(37,99,235,0.2);
+      border-radius: var(--r-xl);
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .plan-card:hover {
+      border-color: rgba(37,99,235,0.5);
+      transform: translateY(-4px);
+    }
+    .plan-card.featured {
+      border-color: var(--blue);
+      background: linear-gradient(160deg, rgba(37,99,235,0.12), rgba(15,36,66,0.95));
+      box-shadow: 0 0 0 1px rgba(37,99,235,0.3), 0 24px 60px rgba(37,99,235,0.15);
+    }
+
+    .plan-badge-popular {
+      position: absolute;
+      top: -13px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--blue);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 50px;
+      white-space: nowrap;
+    }
+
+    .plan-header { display: flex; flex-direction: column; gap: 8px; }
+    .plan-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+    .plan-icon.op  { background: rgba(37,99,235,0.15); border: 1px solid rgba(37,99,235,0.3); }
+    .plan-icon.fin { background: rgba(124,58,237,0.15); border: 1px solid rgba(124,58,237,0.3); }
+    .plan-icon.exe { background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); }
+
+    .plan-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+    .plan-tagline {
+      font-size: 0.82rem;
+      color: var(--gray-400);
+      line-height: 1.5;
+    }
+
+    .plan-divider {
+      height: 1px;
+      background: rgba(37,99,235,0.15);
+    }
+
+    .plan-features {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .plan-feat {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.83rem;
+      color: var(--gray-400);
+      line-height: 1.45;
+    }
+    .plan-feat-check {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .plan-feat-check.blue  { background: rgba(37,99,235,0.18); border: 1px solid rgba(37,99,235,0.35); color: var(--blue-bright); }
+    .plan-feat-check.purple{ background: rgba(124,58,237,0.18); border: 1px solid rgba(124,58,237,0.35); color: #A78BFA; }
+    .plan-feat-check.green { background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.35); color: var(--mint); }
+
+    .plan-cta {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      font-family: var(--ff);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.15s;
+      text-align: center;
+    }
+    .plan-cta.blue-btn  { background: var(--blue); color: #fff; border: none; }
+    .plan-cta.blue-btn:hover { background: #1D4ED8; transform: translateY(-1px); }
+    .plan-cta.ghost-btn { background: transparent; color: var(--blue-bright); border: 1px solid rgba(37,99,235,0.45); }
+    .plan-cta.ghost-btn:hover { background: rgba(37,99,235,0.1); }
+    .plan-cta.green-btn { background: var(--mint); color: var(--navy); border: none; }
+    .plan-cta.green-btn:hover { background: #0EA271; transform: translateY(-1px); }
+
+    .plan-note {
+      font-size: 0.72rem;
+      color: var(--gray-600);
+      text-align: center;
+      margin-top: -8px;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      nav { padding: 14px 20px; }
+      .hero { grid-template-columns: 1fr; padding: 100px 24px 60px; gap: 40px; }
+      .hero-right { display: none; }
+      .section { padding: 60px 24px; }
+      .logos-band { padding: 24px 24px; }
+      .stats-band { padding: 48px 24px; }
+      .demo-wrapper { grid-template-columns: 1fr; }
+      footer { padding: 28px 24px; }
+      .steps-grid::before { display: none; }
+      .chat-panel { right: 12px; width: calc(100vw - 24px); bottom: 80px; }
+      .chat-fab { right: 16px; bottom: 18px; }
+      .pricing-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+
+    /* ── BLOQUE DOLOR ────────────────────────────────────────── */
+    .pain-section {
+      padding: 0 64px 72px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pain-block {
+      background: rgba(37,99,235,0.07);
+      border: 1px solid rgba(37,99,235,0.22);
+      border-left: 4px solid var(--blue-bright);
+      border-radius: var(--r-lg);
+      padding: 36px 40px;
+    }
+    .pain-eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--blue-bright);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .pain-eyebrow::before {
+      content: '';
+      display: inline-block;
+      width: 22px; height: 2px;
+      background: var(--blue-bright);
+      border-radius: 2px;
+    }
+    .pain-question {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+    .pain-body {
+      font-size: 0.95rem;
+      color: var(--gray-400);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .pain-body .danger { color: #FCA5A5; font-weight: 500; }
+    .pain-solution {
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: var(--r-md);
+      padding: 16px 20px;
+      font-size: 0.9rem;
+      color: var(--gray-100);
+      line-height: 1.65;
+    }
+    .pain-solution strong { color: var(--mint); }
+
+    @media (max-width: 900px) {
+      .pain-section { padding: 0 24px 52px; }
+      .pain-block { padding: 24px 22px; }
+      .pain-question { font-size: 1.05rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">
+      <span class="b1"></span><span class="b2"></span>
+      <span class="b3"></span><span class="b4"></span>
+    </div>
+    Insights<span class="flow">Flow</span>
+  </div>
+  <button class="nav-cta" onclick="scrollToDemo()">Agenda tu demo →</button>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Panel ejecutivo conectado a Siigo
+    </div>
+
+    <h1>
+      Convierte la información<br />de Siigo Nube en<br />
+      <span class="highlight">decisiones claras.</span>
+    </h1>
+
+    <p class="hero-sub">
+      Dashboards ejecutivos, reportes visuales e indicadores para entender tu negocio con información <strong>sincronizada automáticamente y actualizable</strong> bajo demanda.
+    </p>
+
+    <div class="feat-icons">
+      <div class="feat-item">
+        <div class="icon-wrap">🔄</div>
+        <span>Sincronización automática</span>
+      </div>
+      <div class="feat-item">
+        <div class="icon-wrap">📊</div>
+        <span>Actualización bajo demanda</span>
+      </div>
+      <div class="feat-item">
+        <div class="icon-wrap">📈</div>
+        <span>Indicadores clave</span>
+      </div>
+      <div class="feat-item">
+        <div class="icon-wrap">📄</div>
+        <span>Reportes visuales</span>
+      </div>
+      <div class="feat-item">
+        <div class="icon-wrap">🛡️</div>
+        <span>Seguridad y confianza</span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="scrollToDemo()">Agenda tu demo gratuita</button>
+      <button class="btn-outline" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Ver funcionalidades</button>
+    </div>
+
+    <div class="siigo-note">
+      <span>🔗</span>
+      <span>Conecta Siigo. Entiende tu negocio. <strong>Toma mejores decisiones.</strong></span>
+    </div>
+  </div>
+
+  <!-- Mini dashboard mock fiel al branding -->
+  <div class="hero-right">
+    <div class="dashboard-mock">
+      <div class="dash-topbar">
+        Panel Ejecutivo Inteligente — Resumen Ejecutivo
+        <div class="live-badge">Sincronizado</div>
+      </div>
+      <div class="dash-kpis">
+        <div class="kpi">
+          <div class="kpi-label">Eficiencia Op.</div>
+          <div class="kpi-val blue">8.1%</div>
+          <div class="kpi-delta down">-7.8 pp vs anterior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">EBITDA</div>
+          <div class="kpi-val green">$78.1M</div>
+          <div class="kpi-delta up">+7.4% vs anterior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Ventas Netas</div>
+          <div class="kpi-val blue">$968.8M</div>
+          <div class="kpi-delta down">-0.8% vs anterior</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Caja Disp.</div>
+          <div class="kpi-val amber">$610.3M</div>
+          <div class="kpi-delta" style="color:var(--gray-600)">Base de liquidez</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Autonomía</div>
+          <div class="kpi-val red">2.0 meses</div>
+          <div class="kpi-delta down">Caja: 1M - 570M</div>
+        </div>
+      </div>
+      <div class="dash-charts">
+        <div class="chart-box">
+          <div class="chart-title">Ventas Netas — Últimos 6 meses</div>
+          <div class="mini-bars">
+            <div class="mini-bar" style="height:70%"></div>
+            <div class="mini-bar" style="height:85%"></div>
+            <div class="mini-bar" style="height:100%"></div>
+            <div class="mini-bar" style="height:60%"></div>
+            <div class="mini-bar" style="height:45%"></div>
+            <div class="mini-bar" style="height:50%"></div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <div class="chart-title">Indicadores Financieros</div>
+          <div class="mini-list">
+            <div class="mini-row">
+              <span class="name">Margen Bruto</span>
+              <span class="val">$423.8M</span>
+              <span class="trend">43.8%</span>
+            </div>
+            <div class="mini-row">
+              <span class="name">Margen EBITDA</span>
+              <span class="val">$78.1M</span>
+              <span class="trend">8.1%</span>
+            </div>
+            <div class="mini-row">
+              <span class="name">Margen Neto</span>
+              <span class="val">$45.2M</span>
+              <span class="trend">4.7%</span>
+            </div>
+            <div class="mini-row">
+              <span class="name">ROA</span>
+              <span class="val">6.2%</span>
+              <span class="trend" style="color:var(--red)">-0.3pp</span>
+            </div>
+            <div class="mini-row">
+              <span class="name">Liquidez Corriente</span>
+              <span class="val">2.1</span>
+              <span class="trend">+0.2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOQUE DOLOR -->
+<div class="pain-section">
+  <div class="pain-block">
+    <div class="pain-eyebrow">¿Te suena familiar?</div>
+    <div class="pain-question">
+      ¿Sabes que la información de tu empresa está en Siigo… pero no puedes verla cuando la necesitas?
+    </div>
+    <p class="pain-body">
+      Tienes que esperar a que tu contador te la entregue, o recibirla en un Excel lleno de números que no dicen nada claro. Mientras tanto, <span class="danger">tomas decisiones a ciegas.</span>
+    </p>
+    <div class="pain-solution">
+      <strong>InsightsFlow</strong> convierte esa información en reportes visuales listos para leer — sin esperar a nadie.
+    </div>
+  </div>
+</div>
+
+<!-- VIDEO INTRO -->
+<section class="video-section">
+  <div class="video-eyebrow">Ve InsightsFlow en acción</div>
+  <h2 class="video-heading">Mira cómo se ve tu negocio<br/>cuando los datos hablan claro</h2>
+  <p class="video-sub">2 minutos que cambian cómo entiendes tu empresa</p>
+
+  <div class="video-thumb-wrap" onclick="openLightbox()">
+    <img
+      src="https://img.youtube.com/vi/ru0nQlcxNd8/maxresdefault.jpg"
+      alt="Video intro InsightsFlow"
+      onerror="this.src='https://img.youtube.com/vi/ru0nQlcxNd8/hqdefault.jpg'"
+    />
+    <div class="play-btn">
+      <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </div>
+    <span class="video-duration-badge">▶ Ver video</span>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="videoLightbox" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+    <iframe
+      id="ytFrame"
+      src=""
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      title="InsightsFlow — Video Intro">
+    </iframe>
+  </div>
+</div>
+
+<!-- LOGOS -->
+<div class="logos-band">
+  <div class="logos-label">Empresa pionera que ya toma mejores decisiones con InsightsFlow</div>
+  <div class="logos-row" style="justify-content:center;">
+    <div class="logo-co" style="font-size:1.4rem; opacity:0.7;">Binaria Media Group SAS</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-eyebrow">Capacidades</div>
+  <h2>Todo lo que necesitas para entender tu negocio financiero</h2>
+  <p class="section-sub">Conectado directamente a Siigo, InsightsFlow transforma tus datos contables en inteligencia ejecutiva accionable.</p>
+  <div class="features-grid">
+    <div class="feat-card">
+      <div class="feat-card-icon">📊</div>
+      <h3>Panel Ejecutivo Inteligente</h3>
+      <p>Resumen ejecutivo con EBITDA, ventas netas, caja disponible, eficiencia operativa y autonomía de caja — todo en una sola vista.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-icon">📈</div>
+      <h3>Estado de Resultados (PyG)</h3>
+      <p>Visualiza ingresos, costos, gastos y márgenes con evolución mensual. Compara períodos y detecta variaciones al instante.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-icon">🏦</div>
+      <h3>Reporte de Compras y Gastos</h3>
+      <p>Top gastos, top proveedores, compras pagadas vs. pendientes con evolución mensual y drill-down por proveedor.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-icon">👥</div>
+      <h3>Clientes y Cartera</h3>
+      <p>Facturación por cliente, cuentas por cobrar, top 10 clientes y análisis de cartera vencida integrados con Siigo.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-icon">🔔</div>
+      <h3>Alertas y Foco Inmediato</h3>
+      <p>El sistema detecta automáticamente alertas críticas — autonomía de caja baja, gastos fuera de control, márgenes en riesgo.</p>
+    </div>
+    <div class="feat-card">
+      <div class="feat-card-icon">🔗</div>
+      <h3>Integración nativa con Siigo</h3>
+      <p>Sincronización automática con tu contabilidad en Siigo. Sin exportar archivos, sin configuración técnica, sin fricción.</p>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div>
+      <div class="stat-num">1 día</div>
+      <div class="stat-label">O menos para estar operativo</div>
+    </div>
+    <div>
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Conectado a Siigo</div>
+    </div>
+    <div>
+      <div class="stat-num">15+</div>
+      <div class="stat-label">Reportes ejecutivos incluidos</div>
+    </div>
+    <div>
+      <div class="stat-num">3×</div>
+      <div class="stat-label">Más rápido en tomar decisiones</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESS -->
+<section class="section">
+  <div class="section-eyebrow">Proceso</div>
+  <h2>En marcha en menos de un día</h2>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-circle">1</div>
+      <h3>Conectas Siigo</h3>
+      <p>Generas tus credenciales API en Siigo y las ingresas en InsightsFlow. Proceso de 10 minutos.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">2</div>
+      <h3>Cargue inicial</h3>
+      <p>Sincronizamos tu historial de Siigo — facturas, compras, clientes, proveedores. Binaria Media cargó 2.5 años en menos de 3 horas.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">3</div>
+      <h3>Activas el panel</h3>
+      <p>Configuras la sincronización automática diaria y desde ese momento la información se actualiza sola cada día.</p>
+    </div>
+    <div class="step">
+      <div class="step-circle">4</div>
+      <h3>Decides con claridad</h3>
+      <p>El mismo día tienes dashboards en tiempo real, alertas automáticas y reportes listos para gerencia.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section" style="padding-top:0;">
+  <div class="section-eyebrow">Historia real</div>
+  <h2>Nació de una necesidad propia</h2>
+  <div class="testimonials-grid" style="grid-template-columns: 1fr 1fr; gap: 24px;">
+
+    <!-- Founder story card -->
+    <div class="t-card" style="border-color: rgba(37,99,235,0.35); background: rgba(37,99,235,0.05);">
+      <div style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--blue-bright); margin-bottom:14px;">El origen</div>
+      <p class="t-quote" style="font-style:normal; color:var(--gray-400);">Soy co-fundador de Binaria Media Group SAS. Durante años sentí la frustración de no poder obtener información financiera clara de Siigo — la data estaba ahí, pero no la podíamos leer fácilmente. Emprendí el camino de construir InsightsFlow para transformar esa información en reportes visuales que cualquier gerente pudiera entender al instante. Hoy es la herramienta con la que dirigimos nuestra empresa.</p>
+      <div class="t-author" style="margin-top:20px;">
+        <div class="t-av" style="background: linear-gradient(135deg, #2563EB, #7C3AED);">JM</div>
+        <div>
+          <div class="t-name">Jairo Massard</div>
+          <div class="t-role">Co-fundador InsightsFlow · Binaria Media Group SAS</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Real testimonial from María Carolina -->
+    <div class="t-card">
+      <div style="font-size:0.7rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--mint); margin-bottom:14px;">Testimonio real · Directora Ejecutiva</div>
+      <p class="t-quote">InsightsFlow cambió completamente la forma en que dirijo la empresa. Antes dependía de que alguien me explicara los números de Siigo. Hoy entro al panel y en minutos tengo claridad total: veo cómo van las ventas, cómo está la cartera, qué tan saludable está la caja, cómo van los márgenes en el PyG, y cuánto estamos gastando y en qué. El Financiero Consolidado y el Buscador Inteligente de Facturas son funcionalidades que simplemente no existen en Siigo. Tomamos mejores decisiones porque ahora sí entendemos nuestros números.</p>
+      <div class="t-author">
+        <div class="t-av" style="background: linear-gradient(135deg, #10B981, #2563EB);">MC</div>
+        <div>
+          <div class="t-name">María Carolina Castilla Castañeda</div>
+          <div class="t-role">Directora Ejecutiva · Binaria Media Group SAS</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- What they use section -->
+  <div style="margin-top:32px; background: rgba(15,36,66,0.6); border: 1px solid rgba(37,99,235,0.2); border-radius:20px; padding:28px 32px;">
+    <div style="font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gray-600); margin-bottom:16px;">Reportes que Binaria Media usa a diario</div>
+    <div style="display:flex; flex-wrap:wrap; gap:10px;">
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Panel Ejecutivo (EBITDA, Caja, Ventas)</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Ingresos por Ventas</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Compras y Gastos</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Cartera (CxC)</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Cruce de IVAs</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Financiero Consolidado</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Estado de Resultados (PyG)</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Buscador Inteligente de Facturas</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Retenciones</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Balance General</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Indicadores Financieros</span>
+      <span style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);border-radius:50px;padding:5px 14px;font-size:0.78rem;color:var(--blue-bright);">Análisis de Variación</span>
+    </div>
+  </div>
+</section>
+
+<!-- PAQUETES -->
+<section class="section" id="paquetes" style="padding-top:0;">
+  <div class="section-eyebrow">Paquetes</div>
+  <h2>Elige el paquete que se adapta a tu empresa</h2>
+  <p class="section-sub">Todos los paquetes incluyen integración nativa con Siigo, implementación en 1 día o menos y sincronización automática.</p>
+
+  <div class="pricing-grid">
+
+    <!-- OPERATIVO -->
+    <div class="plan-card">
+      <div class="plan-header">
+        <div class="plan-icon op">📊</div>
+        <div class="plan-name">Paquete Operativo</div>
+        <div class="plan-tagline">Visibilidad diaria de ventas, compras, clientes y flujo de caja.</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Reporte de Ingresos por Ventas</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Ventas por Vendedor y Ventas por Producto</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Facturación por Clientes</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Reporte Evolutivo por Compras y Gastos</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Compras a Proveedores</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Análisis de Cartera (CxC)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Financiero Consolidado</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Reporte costos por nómina</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Buscador Inteligente de Facturas</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check blue">✓</div>
+          <span>Historial de sincronización con Siigo Nube</span>
+        </div>
+      </div>
+      <button class="plan-cta ghost-btn" onclick="scrollToDemo()">Solicitar demo →</button>
+      <p class="plan-note">Precio según volumen de datos · Consulta en la demo</p>
+    </div>
+
+    <!-- FINANCIERO (FEATURED) -->
+    <div class="plan-card featured">
+      <div class="plan-badge-popular">Más completo para contabilidad</div>
+      <div class="plan-header">
+        <div class="plan-icon fin">📑</div>
+        <div class="plan-name">Paquete Financiero</div>
+        <div class="plan-tagline">Control total del área contable y fiscal — ideal para el equipo de finanzas.</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Cruce de IVAs (IVA generado vs. descontable)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Retenciones (Retefuente, ReteIVA, ReteICA)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Estado de Resultados (PyG) con análisis de variación</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Balance General</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Indicadores Financieros clave (liquidez, endeudamiento, rentabilidad)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check purple">✓</div>
+          <span>Análisis de Variación (mes a mes, año a año)</span>
+        </div>
+        <div class="plan-feat" style="color:var(--gray-600);font-style:italic;">
+          <div class="plan-feat-check" style="border-color:rgba(255,255,255,0.1); background:transparent;">·</div>
+          <span>No incluye módulos operativos</span>
+        </div>
+      </div>
+      <button class="plan-cta blue-btn" onclick="scrollToDemo()">Solicitar demo →</button>
+      <p class="plan-note">Precio según volumen de datos · Consulta en la demo</p>
+    </div>
+
+    <!-- EJECUTIVO -->
+    <div class="plan-card">
+      <div class="plan-header">
+        <div class="plan-icon exe">🚀</div>
+        <div class="plan-name">Paquete Ejecutivo</div>
+        <div class="plan-tagline">La experiencia completa InsightsFlow — operativo + financiero + visión estratégica.</div>
+      </div>
+      <div class="plan-divider"></div>
+      <div class="plan-features">
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Todo lo del Paquete Operativo</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Todo lo del Paquete Financiero</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Dashboard Ejecutivo consolidado (vista única para gerencia)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Configuraciones avanzadas y personalización</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Acceso multiusuario con roles (gerente, contador, operativo)</span>
+        </div>
+        <div class="plan-feat">
+          <div class="plan-feat-check green">✓</div>
+          <span>Soporte prioritario en implementación</span>
+        </div>
+      </div>
+      <button class="plan-cta green-btn" onclick="scrollToDemo()">Solicitar demo →</button>
+      <p class="plan-note">Precio según volumen de datos · Consulta en la demo</p>
+    </div>
+
+  </div>
+
+  <!-- Nota inferior -->
+  <div style="margin-top:32px; text-align:center; background:rgba(15,36,66,0.5); border:1px solid rgba(37,99,235,0.15); border-radius:var(--r-lg); padding:20px 32px; display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;">
+    <span style="font-size:1.1rem;">🔗</span>
+    <span style="font-size:0.88rem; color:var(--gray-400);">Todos los paquetes se conectan directamente a tu cuenta de <strong style="color:var(--white);">Siigo</strong> — sin exportar archivos, sin configuración técnica.</span>
+    <button class="btn-primary" style="padding:10px 20px; font-size:0.85rem;" onclick="scrollToDemo()">Ver demo en vivo →</button>
+  </div>
+</section>
+
+<!-- DEMO / CALENDAR -->
+<section class="section" id="demo" style="padding-top:0; padding-bottom:100px;">
+  <div class="section-eyebrow">Demo gratuita</div>
+  <h2>Agenda una sesión personalizada</h2>
+  <div class="demo-wrapper">
+    <div class="demo-left">
+      <h3>30 minutos que pueden cambiar cómo ves tu negocio</h3>
+      <p>En la demo verás InsightsFlow conectado a datos reales de Siigo, con los reportes que más le importan a tu empresa. Sin compromisos, sin presentaciones genéricas.</p>
+      <div class="demo-perks">
+        <div class="perk">
+          <div class="perk-check">✓</div>
+          <span>Panel ejecutivo con tus datos reales de Siigo</span>
+        </div>
+        <div class="perk">
+          <div class="perk-check">✓</div>
+          <span>Revisión de los indicadores más críticos para tu sector</span>
+        </div>
+        <div class="perk">
+          <div class="perk-check">✓</div>
+          <span>Implementación en 1 día o menos — Binaria Media cargó 2.5 años de datos en menos de 3 horas</span>
+        </div>
+        <div class="perk">
+          <div class="perk-check">✓</div>
+          <span>Precio claro desde el primer día, sin sorpresas</span>
+        </div>
+        <div class="perk">
+          <div class="perk-check">✓</div>
+          <span>Acceso de prueba incluido después de la demo</span>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div>
+      <div class="calendar-box" style="min-height:auto; padding: 40px 32px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; text-align:center;">
+
+        <!-- Header -->
+        <div style="display:flex; align-items:center; gap:12px; width:100%; border-bottom:1px solid rgba(37,99,235,0.15); padding-bottom:20px;">
+          <div style="width:40px;height:40px;background:rgba(37,99,235,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">📅</div>
+          <div style="text-align:left;">
+            <div style="font-size:0.95rem;font-weight:700;">Agenda tu demo de InsightsFlow</div>
+            <div style="font-size:0.75rem;color:var(--gray-400);">Sesión de 30 min · Videollamada</div>
+          </div>
+        </div>
+
+        <!-- Ilustración / info -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:16px; padding: 12px 0;">
+          <div style="font-size:3.5rem; line-height:1;">🗓️</div>
+          <div>
+            <div style="font-size:1.05rem; font-weight:700; margin-bottom:6px;">Elige el día y la hora que mejor te quede</div>
+            <div style="font-size:0.85rem; color:var(--gray-400); line-height:1.6;">Se abre el calendario directamente en esta página.<br/>Sin formularios largos, sin spam.</div>
+          </div>
+        </div>
+
+        <!-- Perks rápidos -->
+        <div style="display:flex; flex-direction:column; gap:10px; width:100%; background:rgba(37,99,235,0.06); border:1px solid rgba(37,99,235,0.15); border-radius:14px; padding:18px 20px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--gray-400);">
+            <span style="color:var(--mint);font-size:0.9rem;">✓</span> Solo 30 minutos · 100% online
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--gray-400);">
+            <span style="color:var(--mint);font-size:0.9rem;">✓</span> Ves InsightsFlow con datos reales de Siigo
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:0.83rem;color:var(--gray-400);">
+            <span style="color:var(--mint);font-size:0.9rem;">✓</span> Sin compromiso · Acceso de prueba incluido
+          </div>
+        </div>
+
+        <!-- CTA principal -->
+        <button
+          onclick="Calendly.initPopupWidget({url:'https://calendly.com/iinsightsflow/30min?primary_color=2563eb&hide_gdpr_banner=1'});return false;"
+          style="width:100%;padding:16px 24px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-family:var(--ff);font-size:1rem;font-weight:700;cursor:pointer;transition:background 0.15s,transform 0.15s;box-shadow:0 8px 28px rgba(37,99,235,0.35);"
+          onmouseover="this.style.background='#1D4ED8';this.style.transform='translateY(-2px)'"
+          onmouseout="this.style.background='var(--blue)';this.style.transform='translateY(0)'">
+          📅 &nbsp;Elegir fecha y hora →
+        </button>
+
+        <p style="font-size:0.72rem; color:var(--gray-600); margin-top:-12px;">El calendario se abre aquí mismo · Powered by Calendly</p>
+      </div>
+
+      <!-- Calendly popup JS -->
+      <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+      <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <div class="logo-icon">
+      <span class="b1"></span><span class="b2"></span>
+      <span class="b3"></span><span class="b4"></span>
+    </div>
+    Insights<span class="flow">Flow</span>
+  </div>
+  <div class="footer-copy">© 2026 InsightsFlow · Binaria Media Group SAS · Todos los derechos reservados.</div>
+  <div class="footer-links">
+    <a href="#">Privacidad</a>
+    <a href="#">Términos</a>
+    <a href="#">Soporte</a>
+  </div>
+</footer>
+
+<!-- CHAT FAB -->
+<button class="chat-fab" onclick="toggleChat()" aria-label="Abrir asistente">💬</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <div class="chat-head-av">🤖</div>
+    <div class="chat-head-info">
+      <div class="chat-name">Asistente InsightsFlow</div>
+      <div class="chat-status">En línea</div>
+    </div>
+  </div>
+  <div class="chat-msgs" id="chatMsgs">
+    <div class="msg bot">¡Hola! Soy el asistente de InsightsFlow 👋 Te puedo contar sobre la plataforma o ayudarte a preparar tu demo. ¿Qué necesitas?</div>
+  </div>
+  <div class="chips-row" id="chipsRow">
+    <button class="chip" onclick="quickSend('¿Cuánto cuesta InsightsFlow?')">💰 Precios</button>
+    <button class="chip" onclick="quickSend('¿Cómo funciona la integración con Siigo?')">🔗 Siigo</button>
+    <button class="chip" onclick="quickSend('¿Cuánto tarda implementarlo?')">⏱️ Implementación</button>
+    <button class="chip" onclick="quickSend('Quiero agendar una demo')">📅 Demo</button>
+  </div>
+  <div class="chat-form">
+    <input class="chat-inp" id="chatInp" type="text" placeholder="Escribe tu pregunta..."
+           onkeypress="if(event.key==='Enter') sendMsg()" />
+    <button class="chat-send-btn" onclick="sendMsg()">→</button>
+  </div>
+</div>
+
+<script>
+  function scrollToDemo() {
+    document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function openLightbox() {
+    const lb = document.getElementById('videoLightbox');
+    document.getElementById('ytFrame').src = 'https://www.youtube.com/embed/ru0nQlcxNd8?autoplay=1&rel=0&modestbranding=1';
+    lb.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    const lb = document.getElementById('videoLightbox');
+    lb.classList.remove('active');
+    document.getElementById('ytFrame').src = '';
+    document.body.style.overflow = '';
+  }
+
+  function closeLightboxOnBg(e) {
+    if (e.target === document.getElementById('videoLightbox')) closeLightbox();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  function toggleChat() {
+    document.getElementById('chatPanel').classList.toggle('open');
+  }
+
+  const SYSTEM = `Eres el asistente de ventas de InsightsFlow, una plataforma de Business Intelligence conectada directamente a Siigo (software contable colombiano).
+
+Información clave de InsightsFlow:
+- Conecta con Siigo para mostrar dashboards ejecutivos en tiempo real
+- Incluye: Panel Ejecutivo (EBITDA, ventas, caja, eficiencia), Estado de Resultados (PyG), Reporte Compras/Gastos, Top Clientes, Top Proveedores, Cartera, Análisis de Variación, Balance General, Indicadores Financieros, Flujo de Caja, Reportes de Retenciones, Cruce de IVAs
+- Alertas automáticas: autonomía de caja baja, gastos fuera de control, márgenes en riesgo
+- Implementación en menos de 1 semana
+- Precio: desde $500 USD/mes (depende del número de usuarios y módulos)
+- Prueba gratuita de 14 días después de la demo
+- Empresa: Impocommerce SAS (Colombia)
+- URL de la app: insigthsflow.up.railway.app
+
+Reglas:
+- Responde siempre en español colombiano, natural y conversacional
+- Máximo 3 oraciones por respuesta, directo al punto
+- Si preguntan por precios exactos, da el rango y ofrece la demo para cotización personalizada
+- Si muestran interés en agendar, diles que suban al botón "Agenda tu demo" en la parte superior
+- Enfócate en el dolor: los gerentes no tienen visibilidad clara de su negocio financiero con solo Siigo`;
+
+  let history = [];
+
+  async function sendMsg() {
+    const inp = document.getElementById('chatInp');
+    const txt = inp.value.trim();
+    if (!txt) return;
+    inp.value = '';
+    await chat(txt);
+  }
+
+  async function quickSend(txt) {
+    document.getElementById('chipsRow').style.display = 'none';
+    await chat(txt);
+  }
+
+  function addMsg(role, txt, loading = false) {
+    const box = document.getElementById('chatMsgs');
+    const d = document.createElement('div');
+    d.className = `msg ${role === 'user' ? 'user' : 'bot'}${loading ? ' loading' : ''}`;
+    d.textContent = txt;
+    box.appendChild(d);
+    box.scrollTop = box.scrollHeight;
+    return d;
+  }
+
+  async function chat(txt) {
+    addMsg('user', txt);
+    history.push({ role: 'user', content: txt });
+    const loader = addMsg('bot', 'Escribiendo…', true);
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: SYSTEM,
+          messages: history
+        })
+      });
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || 'Hubo un error. Intenta de nuevo.';
+
+      loader.textContent = reply;
+      loader.classList.remove('loading');
+      history.push({ role: 'assistant', content: reply });
+
+      // Si menciona demo, agrega botón
+      if (/demo|agendar|calendar|reuni[oó]n/i.test(reply)) {
+        const btn = document.createElement('button');
+        btn.className = 'chip';
+        btn.style.cssText = 'background:var(--blue);color:#fff;border-color:var(--blue);margin:4px 14px 8px;display:inline-block;';
+        btn.textContent = '📅 Ir al calendario →';
+        btn.onclick = () => { scrollToDemo(); toggleChat(); };
+        document.getElementById('chatMsgs').appendChild(btn);
+        document.getElementById('chatMsgs').scrollTop = 99999;
+      }
+    } catch {
+      loader.textContent = 'Sin conexión. ¿Te puedo guiar al calendario directamente?';
+      loader.classList.remove('loading');
+    }
+  }
+</script>
+
+</body>
+</html>
