@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Fondo navy -->
+  <rect width="32" height="32" rx="6" fill="#0D1B2E"/>
+  <!-- Barra 1 — azul claro, más baja -->
+  <rect x="5" y="19" width="5" height="8" rx="1.5" fill="#60A5FA"/>
+  <!-- Barra 2 — azul medio -->
+  <rect x="12" y="14" width="5" height="13" rx="1.5" fill="#3B82F6"/>
+  <!-- Barra 3 — azul eléctrico, más alta -->
+  <rect x="19" y="8" width="5" height="19" rx="1.5" fill="#2563EB"/>
+  <!-- Barra 4 — violeta -->
+  <rect x="26" y="12" width="5" height="15" rx="1.5" fill="#7C3AED"/>
+</svg>
