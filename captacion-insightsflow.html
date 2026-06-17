@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InsightsFlow — Plan de Captación sin Premium</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0D1B2E;
+    --navy2: #13243d;
+    --panel: #1a2d47;
+    --border: #1e3a5f;
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --cyan: #06b6d4;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --dim: #334155;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--navy2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo-bars { display: flex; gap: 3px; align-items: flex-end; }
+  .logo-bars span { width: 5px; border-radius: 2px; background: var(--blue-light); }
+  .logo-name { font-weight: 800; font-size: 16px; color: #fff; letter-spacing: -.5px; }
+  .logo-tag { background: var(--blue); color: #fff; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 700; }
+  .nav-tabs { margin-left: 24px; display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav-tab {
+    padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer;
+    font-size: 12px; font-weight: 600; font-family: inherit;
+    background: transparent; color: var(--muted); transition: all .15s;
+  }
+  .nav-tab.active { background: var(--panel); color: var(--blue-light); }
+  .nav-tab:hover:not(.active) { color: var(--text); }
+
+  /* LAYOUT */
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px; }
+
+  /* SECTIONS */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* HERO STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--panel);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border-left: 3px solid var(--blue-light);
+  }
+  .stat-card.amber { border-color: var(--amber); }
+  .stat-card.green { border-color: var(--green); }
+  .stat-card.purple { border-color: var(--purple); }
+  .stat-n { font-size: 26px; font-weight: 800; color: #fff; }
+  .stat-l { font-size: 11px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+
+  /* CANAL CARDS */
+  .canal-grid { display: grid; gap: 16px; }
+  .canal-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .canal-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .canal-icon { font-size: 22px; }
+  .canal-meta { flex: 1; }
+  .canal-name { font-size: 15px; font-weight: 700; color: #fff; }
+  .canal-sub { font-size: 12px; color: var(--muted); }
+  .canal-badge {
+    font-size: 10px; font-weight: 700; padding: 3px 9px;
+    border-radius: 99px; white-space: nowrap;
+  }
+  .badge-now { background: #22c55e22; color: var(--green); border: 1px solid var(--green); }
+  .badge-week { background: #f59e0b22; color: var(--amber); border: 1px solid var(--amber); }
+  .badge-medium { background: #8b5cf622; color: var(--purple); border: 1px solid var(--purple); }
+  .canal-arrow { font-size: 14px; color: var(--muted); transition: transform .2s; }
+  .canal-card.open .canal-arrow { transform: rotate(180deg); }
+
+  .canal-body { display: none; padding: 0 18px 18px; border-top: 1px solid var(--border); }
+  .canal-card.open .canal-body { display: block; padding-top: 16px; }
+
+  .steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .step {
+    display: flex; gap: 10px; align-items: flex-start;
+    background: #0d1b2e88; border-radius: 8px; padding: 10px 12px;
+  }
+  .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700; color: var(--blue-light);
+    background: #2563eb22; border-radius: 4px;
+    padding: 2px 7px; white-space: nowrap; margin-top: 1px;
+  }
+  .step-text { font-size: 13px; color: #cbd5e1; line-height: 1.5; }
+  .step-text strong { color: #fff; }
+
+  /* TEMPLATE BOX */
+  .tpl-label { font-size: 11px; font-weight: 700; color: var(--blue-light); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+  .tpl-box {
+    background: #0a1628;
+    border: 1px solid var(--dim);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #94a3b8;
+    white-space: pre-wrap;
+    line-height: 1.65;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 6px;
+    padding: 4px 10px; font-size: 11px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+    transition: background .2s;
+  }
+  .copy-btn.ok { background: var(--green); }
+
+  /* TIPS */
+  .tip {
+    background: #1a3a1a; border-left: 3px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: #86efac;
+    margin-bottom: 8px;
+  }
+  .warn {
+    background: #3a1a1a; border-left: 3px solid var(--red);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: #fca5a5;
+    margin-bottom: 8px;
+  }
+  .info {
+    background: #1a2d47; border-left: 3px solid var(--blue-light);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: #93c5fd;
+    margin-bottom: 8px;
+  }
+
+  /* LINKEDIN WORKAROUNDS */
+  .li-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
+  .li-card {
+    background: #0a1628;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .li-card-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .li-card-text { font-size: 12px; color: #94a3b8; line-height: 1.5; }
+  .li-card.yes { border-top: 2px solid var(--green); }
+  .li-card.no { border-top: 2px solid var(--red); }
+
+  /* CRM TABLE */
+  .crm-toolbar { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+  .crm-add-btn {
+    background: var(--blue); color: #fff;
+    border: none; border-radius: 8px;
+    padding: 8px 16px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+  }
+  .filter-pill {
+    padding: 4px 12px; border-radius: 99px; border: 1px solid var(--dim);
+    background: transparent; color: var(--muted);
+    font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit;
+    transition: all .15s;
+  }
+  .filter-pill.active { border-color: var(--blue-light); color: var(--blue-light); background: #2563eb22; }
+
+  .crm-form {
+    background: var(--panel);
+    border: 1px solid var(--blue-light);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .crm-form.show { display: block; }
+  .crm-form-title { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 14px; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .form-field label { font-size: 11px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .form-field input, .form-field select {
+    width: 100%; background: #0a1628;
+    border: 1px solid var(--dim); border-radius: 6px;
+    padding: 7px 10px; color: var(--text); font-size: 13px; font-family: inherit;
+  }
+  .form-field.full { grid-column: 1 / -1; }
+  .form-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .btn-save {
+    background: var(--blue); color: #fff; border: none;
+    border-radius: 7px; padding: 8px 18px;
+    font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btn-cancel {
+    background: var(--dim); color: #94a3b8; border: none;
+    border-radius: 7px; padding: 8px 18px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+  }
+
+  .contact-list { display: flex; flex-direction: column; gap: 8px; }
+  .contact-row {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .contact-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .contact-meta { font-size: 12px; color: var(--muted); }
+  .contact-right { display: flex; gap: 8px; align-items: center; margin-left: auto; flex-wrap: wrap; }
+  .pill-canal {
+    font-size: 11px; background: #0a1628; color: #94a3b8;
+    padding: 2px 8px; border-radius: 99px; border: 1px solid var(--dim);
+  }
+  .pill-estado {
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 99px;
+  }
+  .btn-edit { background: var(--dim); color: #94a3b8; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
+  .btn-del { background: #450a0a; color: #fca5a5; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; cursor: pointer; font-family: inherit; }
+  .contact-note { width: 100%; font-size: 12px; color: #475569; font-style: italic; }
+
+  .empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 14px; }
+
+  /* SEMANA VISUAL */
+  .week-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 24px; }
+  .day-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .day-card:hover, .day-card.sel { border-color: var(--blue-light); }
+  .day-icon { font-size: 18px; margin-bottom: 4px; }
+  .day-label { font-size: 10px; color: var(--blue-light); font-weight: 700; text-transform: uppercase; }
+  .day-title { font-size: 12px; font-weight: 600; color: #fff; margin-top: 2px; line-height: 1.3; }
+  .day-detail { display: none; background: var(--panel); border: 1px solid var(--blue-light); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .day-detail.show { display: block; }
+  .day-detail-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; }
+  .task-item { display: flex; gap: 8px; padding: 8px 0; border-bottom: 1px solid #1e3a5f22; font-size: 13px; color: #cbd5e1; }
+  .task-item:last-child { border-bottom: none; }
+  .task-check { color: var(--green); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+
+  /* META BANNER */
+  .meta-banner {
+    background: linear-gradient(135deg, #1e3a5f, #0f2d4a);
+    border: 1px solid var(--blue-light);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .meta-title { font-size: 12px; font-weight: 700; color: var(--blue-light); margin-bottom: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  .meta-nums { display: flex; gap: 24px; flex-wrap: wrap; }
+  .meta-num { text-align: center; }
+  .meta-n { font-size: 28px; font-weight: 800; color: #fff; }
+  .meta-l { font-size: 11px; color: #94a3b8; }
+
+  /* PREMIUM SECTION */
+  .premium-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .pc-card { background: var(--panel); border-radius: 10px; padding: 16px; border: 1px solid var(--border); }
+  .pc-card.yes { border-top: 3px solid var(--green); }
+  .pc-card.no { border-top: 3px solid var(--red); }
+  .pc-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+  .pc-item { font-size: 12px; color: #94a3b8; padding: 4px 0; display: flex; gap: 8px; }
+  .pc-icon { flex-shrink: 0; }
+
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .week-grid { grid-template-columns: 1fr 1fr; }
+    .li-grid { grid-template-columns: 1fr; }
+    .premium-compare { grid-template-columns: 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo-bars">
+    <span style="height:8px"></span><span style="height:12px"></span>
+    <span style="height:16px"></span><span style="height:20px"></span>
+  </div>
+  <span class="logo-name">InsightsFlow</span>
+  <span class="logo-tag">Captación</span>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showSection('canales')">📡 Canales</button>
+    <button class="nav-tab" onclick="showSection('linkedin')">💼 LinkedIn</button>
+    <button class="nav-tab" onclick="showSection('semana')">📅 Semana</button>
+    <button class="nav-tab" onclick="showSection('crm')">👥 CRM</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- STATS -->
+  <div class="stats-row" id="globalStats">
+    <div class="stat-card"><div class="stat-n" id="sTotal">0</div><div class="stat-l">Prospectos</div></div>
+    <div class="stat-card amber"><div class="stat-n" id="sContactados">0</div><div class="stat-l">Contactados</div></div>
+    <div class="stat-card purple"><div class="stat-n" id="sDemos">0</div><div class="stat-l">Demos</div></div>
+    <div class="stat-card green"><div class="stat-n" id="sClientes">0</div><div class="stat-l">Clientes</div></div>
+  </div>
+
+  <!-- ===== CANALES ===== -->
+  <div class="section active" id="sec-canales">
+    <h2 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">Plan de captación sin LinkedIn Premium</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">5 canales ordenados por velocidad de resultado. Empieza por arriba.</p>
+
+    <div class="canal-grid">
+
+      <!-- CANAL 1: Red personal -->
+      <div class="canal-card" id="c1">
+        <div class="canal-header" onclick="toggleCanal('c1')">
+          <span class="canal-icon">📱</span>
+          <div class="canal-meta">
+            <div class="canal-name">Red personal — WhatsApp y correo</div>
+            <div class="canal-sub">Las personas que ya te conocen. Mayor tasa de respuesta.</div>
+          </div>
+          <span class="canal-badge badge-now">Arrancar hoy</span>
+          <span class="canal-arrow">▼</span>
+        </div>
+        <div class="canal-body">
+          <div class="info">Aunque solo tengas 3-4 contactos contables, tu red personal incluye toda persona que alguna vez te ha pagado, te recomendó, trabajó contigo o te conoce de algo. Muchos de ellos conocen a un gerente o contador.</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><span class="step-text">Abre tus contactos de WhatsApp y busca estos roles: <strong>Contador, Gerente, Director, Empresario, Administrador, Revisor Fiscal.</strong> No importa si no los has hablado en meses.</span></div>
+            <div class="step"><span class="step-num">02</span><span class="step-text">Para los que no tienen rol claro, escríbeles una pregunta de calificación antes del pitch: <strong>"Hola [Nombre], ¿sigues manejando la parte financiera de [empresa]?"</strong></span></div>
+            <div class="step"><span class="step-num">03</span><span class="step-text">Para los calificados, usa el mensaje plantilla de abajo. Personaliza la primera línea con algo real.</span></div>
+            <div class="step"><span class="step-num">04</span><span class="step-text">Pide referidos explícitamente: <strong>"¿Conoces algún contador o empresario que pueda necesitar esto?"</strong> — cada contacto tuyo puede abrirte 3 puertas nuevas.</span></div>
+          </div>
+          <div class="tpl-label">Plantilla WhatsApp — Red cercana</div>
+          <div class="tpl-box">Hola [Nombre], ¿cómo estás?
+
+Quería contarte sobre algo que construimos este año: una plataforma llamada InsightsFlow que conecta con Siigo Nube y convierte los datos contables en dashboards ejecutivos — ventas, cartera, caja, PyG — en tiempo real, sin exportar Excel.
+
+Nació de una necesidad real en Binaria Media Group SAS y ya lo estamos usando nosotros mismos.
+
+¿Te interesaría verla en una demo de 20-30 minutos?
+
+https://insightsflow-landing.vercel.app/<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tpl-label">Mensaje de referidos (después de la demo)</div>
+          <div class="tpl-box">Hola [Nombre], gracias por el tiempo hoy.
+
+Una última pregunta: ¿conoces algún contador, gerente o empresario que use Siigo y pueda beneficiarse de esto? Con gusto le hago la misma demo.
+
+Si me das su WhatsApp o correo, yo me encargo.<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tip">✅ Meta: 10 mensajes enviados esta semana. 3-4 respuestas ya es un buen arranque.</div>
+        </div>
+      </div>
+
+      <!-- CANAL 2: LinkedIn orgánico -->
+      <div class="canal-card" id="c2">
+        <div class="canal-header" onclick="toggleCanal('c2')">
+          <span class="canal-icon">💼</span>
+          <div class="canal-meta">
+            <div class="canal-name">LinkedIn orgánico — Contenido + conexiones</div>
+            <div class="canal-sub">Sin Premium. Publicar atrae más que buscar.</div>
+          </div>
+          <span class="canal-badge badge-now">Arrancar hoy</span>
+          <span class="canal-arrow">▼</span>
+        </div>
+        <div class="canal-body">
+          <div class="warn">⚠️ Con cuenta gratuita tienes ~20 invitaciones/mes con nota. Úsalas con criterio. Sin nota: ilimitadas.</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><span class="step-text"><strong>Publica 2 veces esta semana.</strong> No vendas InsightsFlow — habla del problema. Ejemplo: "¿Por qué muchas PYMEs en Colombia no saben si están ganando o perdiendo hasta que el contador entrega el informe mensual?"</span></div>
+            <div class="step"><span class="step-num">02</span><span class="step-text"><strong>Busca sin límite</strong> usando filtros: Cargo = "Contador", "Gerente Financiero", "Revisor Fiscal" + País = Colombia. Conéctate sin nota. La mayoría acepta igual.</span></div>
+            <div class="step"><span class="step-num">03</span><span class="step-text">Cuando acepten, <strong>espera 6-12 horas</strong>, luego envía el mensaje post-aceptación de abajo.</span></div>
+            <div class="step"><span class="step-num">04</span><span class="step-text"><strong>Comenta en publicaciones</strong> de contadores y CFOs colombianos. Un comentario útil de 2-3 líneas te pone en su radar sin gastar invitaciones.</span></div>
+          </div>
+          <div class="tpl-label">Nota de invitación — Contador (200 caracteres)</div>
+          <div class="tpl-box">Hola [Nombre]. Veo que trabajas en el área contable. Hemos desarrollado algo que complementa a Siigo Nube y me gustaría conectar para conocer tu opinión. Saludos.<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tpl-label">Mensaje post-aceptación (enviar 6-12h después)</div>
+          <div class="tpl-box">Hola [Nombre], gracias por conectar.
+
+Desarrollamos InsightsFlow, una plataforma que conecta con Siigo Nube y genera dashboards ejecutivos automáticos — ventas, cartera, caja, PyG — para que gerentes y contadores vean los números sin esperar el informe del mes.
+
+Nació en Binaria Media Group SAS para resolver un problema empresarial real. ¿Te interesaría una demo de 20-30 min?
+
+https://insightsflow-landing.vercel.app/<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tpl-label">Post LinkedIn #1 — El problema (copia y publica)</div>
+          <div class="tpl-box">¿Cuántas PYMEs en Colombia saben hoy si están ganando o perdiendo dinero?
+
+La mayoría espera el informe del contador. Que puede tardar días. O semanas.
+
+Mientras tanto:
+— Se toman decisiones sin datos.
+— Se aprueban gastos que no deberían.
+— Se pierden oportunidades por no ver la caja a tiempo.
+
+Construimos InsightsFlow para resolver exactamente eso.
+Conecta con Siigo Nube y muestra ventas, cartera, caja y PyG en tiempo real.
+
+¿Le ha pasado esto a alguna empresa que conoces?
+
+#Siigo #FinanzasPymes #Colombia #Contabilidad<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tpl-label">Post LinkedIn #2 — El resultado (publicar 3-4 días después)</div>
+          <div class="tpl-box">Hace unos meses no podíamos ver el estado real de Binaria Media Group SAS sin pedirle al contador un reporte.
+
+Hoy abrimos un dashboard y en 30 segundos vemos:
+✅ Ventas del mes vs. mes anterior
+✅ Cartera por vencer
+✅ Estado de caja
+✅ PyG actualizado
+✅ Cualquier factura en segundos
+
+Lo construimos sobre Siigo Nube. Se llama InsightsFlow.
+
+Si tu empresa usa Siigo y quieres ver cómo funciona, comenta o escríbeme.
+
+#InsightsFlow #Siigo #Dashboards #PymesColombiana<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tip">✅ El contenido hace que las personas lleguen a TI. Así no gastas invitaciones buscando desconocidos.</div>
+        </div>
+      </div>
+
+      <!-- CANAL 3: Grupos WhatsApp / Telegram -->
+      <div class="canal-card" id="c3">
+        <div class="canal-header" onclick="toggleCanal('c3')">
+          <span class="canal-icon">💬</span>
+          <div class="canal-meta">
+            <div class="canal-name">Grupos de WhatsApp y Telegram</div>
+            <div class="canal-sub">Contadores y empresarios colombianos. Alcance masivo sin costo.</div>
+          </div>
+          <span class="canal-badge badge-week">Esta semana</span>
+          <span class="canal-arrow">▼</span>
+        </div>
+        <div class="canal-body">
+          <div class="info">Colombia tiene cientos de grupos de contadores, revisores fiscales y empresarios en WhatsApp y Telegram. La clave es entrar con valor, no con spam.</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><span class="step-text"><strong>Cómo entrar a grupos:</strong> Busca en Google "Grupo WhatsApp contadores Colombia 2024", en Facebook "grupos contadores Colombia" o pide a tus 2-3 contactos contadores que te agreguen a los suyos.</span></div>
+            <div class="step"><span class="step-num">02</span><span class="step-text"><strong>Espera 2-3 días antes de publicar.</strong> Lee el tono del grupo. ¿Es informativo? ¿Comercial? Adáptate.</span></div>
+            <div class="step"><span class="step-num">03</span><span class="step-text">Publica el mensaje de valor de abajo — no el pitch directo. Genera curiosidad primero.</span></div>
+            <div class="step"><span class="step-num">04</span><span class="step-text">Responde los comentarios individualmente. Mueve la conversación al privado para proponer la demo.</span></div>
+          </div>
+          <div class="tpl-label">Mensaje para grupos de contadores</div>
+          <div class="tpl-box">Buenas tardes a todos. Soy Jairo, empresario colombiano, usuario de Siigo desde hace años.
+
+Desarrollamos una herramienta que conecta con Siigo Nube y genera dashboards financieros automáticos para gerentes (ventas, cartera, caja, PyG).
+
+Estoy buscando contadores que trabajen con clientes en Siigo Nube para mostrársela y recibir retroalimentación. ¿A alguien le interesaría verla en una demo de 20-30 min?
+
+Más info: https://insightsflow-landing.vercel.app/<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tpl-label">Mensaje para grupos de empresarios / gremios</div>
+          <div class="tpl-box">Hola a todos. Soy Jairo Massard, empresario colombiano (Binaria Media Group / Impocommerce SAS).
+
+Desarrollamos InsightsFlow: conecta con Siigo Nube y muestra ventas, cartera, caja y PyG en dashboards en tiempo real. Lo usamos nosotros mismos y nos cambió la forma de tomar decisiones financieras.
+
+Estoy buscando otras empresas que usen Siigo Nube para mostrarles cómo funciona en una demo gratuita de 20 minutos.
+
+¿Alguien usa Siigo Nube aquí? Con gusto les muestro.
+
+https://insightsflow-landing.vercel.app/<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="warn">⚠️ No envíes el mismo mensaje a 10 grupos el mismo día. Uno o dos grupos por semana, con seguimiento real.</div>
+        </div>
+      </div>
+
+      <!-- CANAL 4: Facebook grupos -->
+      <div class="canal-card" id="c4">
+        <div class="canal-header" onclick="toggleCanal('c4')">
+          <span class="canal-icon">👥</span>
+          <div class="canal-meta">
+            <div class="canal-name">Grupos de Facebook — Contadores y PYMEs Colombia</div>
+            <div class="canal-sub">Miles de miembros. Buena tasa si el mensaje es útil.</div>
+          </div>
+          <span class="canal-badge badge-week">Esta semana</span>
+          <span class="canal-arrow">▼</span>
+        </div>
+        <div class="canal-body">
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><span class="step-text">Busca en Facebook: <strong>"Contadores Colombia"</strong>, <strong>"Siigo Colombia"</strong>, <strong>"Empresarios Colombia"</strong>, <strong>"PYMES Colombia"</strong>. Únete a 3-5 grupos grandes (+5.000 miembros).</span></div>
+            <div class="step"><span class="step-num">02</span><span class="step-text">Antes de publicar, comenta en 2-3 posts existentes con respuestas útiles. Así tu perfil no parece spam cuando publiques.</span></div>
+            <div class="step"><span class="step-num">03</span><span class="step-text">Publica con una pregunta + el problema. No empieces con "Tengo un producto". Empieza con <strong>"¿A alguien más le pasa que…?"</strong></span></div>
+          </div>
+          <div class="tpl-label">Post para grupos Facebook — Contadores Siigo</div>
+          <div class="tpl-box">Pregunta para los contadores que manejan clientes en Siigo Nube:
+
+¿Sus clientes empresarios les piden reportes de ventas, cartera o caja por fuera del sistema? ¿Con qué frecuencia?
+
+Pregunto porque desarrollamos InsightsFlow: genera esos dashboards automáticamente desde Siigo Nube, sin que el contador tenga que exportar ni armar nada manualmente. Ya lo usamos en nuestra empresa.
+
+¿Alguien quiere verlo en una demo de 20-30 minutos?<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tip">✅ Empezar con una pregunta genera comentarios orgánicos. Cada comentario amplifica el alcance del post.</div>
+        </div>
+      </div>
+
+      <!-- CANAL 5: Contador aliado -->
+      <div class="canal-card" id="c5">
+        <div class="canal-header" onclick="toggleCanal('c5')">
+          <span class="canal-icon">🤝</span>
+          <div class="canal-meta">
+            <div class="canal-name">Canal aliado — El contador multiplicador</div>
+            <div class="canal-sub">Un buen contador puede darte acceso a 20-50 empresas de golpe.</div>
+          </div>
+          <span class="canal-badge badge-medium">Semana 2</span>
+          <span class="canal-arrow">▼</span>
+        </div>
+        <div class="canal-body">
+          <div class="info">Esta es la estrategia más poderosa a mediano plazo. Un contador que maneja 20 clientes en Siigo puede recomendarte a todos ellos si entiende el valor que InsightsFlow le da a sus propios clientes.</div>
+          <div class="steps">
+            <div class="step"><span class="step-num">01</span><span class="step-text">Identifica 1-2 contadores de tu red actual (aunque sean pocos). Hazles la demo con enfoque especial: <strong>"¿Cómo podrías ofrecerle esto a tus clientes?"</strong></span></div>
+            <div class="step"><span class="step-num">02</span><span class="step-text">Propón un esquema de referidos: <strong>"Por cada cliente que uses InsightsFlow a través tuyo, te doy un porcentaje del primer mes o un beneficio en tu propia cuenta."</strong></span></div>
+            <div class="step"><span class="step-num">03</span><span class="step-text">Dale materiales: la landing, un mini PDF de 1 página, y el mensaje que puede reenviar a sus clientes.</span></div>
+          </div>
+          <div class="tpl-label">Propuesta para contador aliado</div>
+          <div class="tpl-box">Hola [Nombre].
+
+Sé que manejas varios clientes en Siigo. Quería mostrarte algo que desarrollamos y que podría complementar tu trabajo.
+
+InsightsFlow conecta con Siigo y genera dashboards ejecutivos automáticos para los gerentes de tus clientes: ventas, cartera, caja, PyG, en tiempo real.
+
+La idea es que tú lo ofrezcas como un servicio de valor agregado a tus clientes. Yo manejo la plataforma, tú obtienes una comisión por cada cliente que refiera.
+
+¿Tienes 20-30 minutos esta semana para que te lo muestre?<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+          <div class="tip">✅ Un contador aliado vale más que 100 invitaciones frías. Prioriza esto después de las primeras demos.</div>
+        </div>
+      </div>
+
+    </div><!-- end canal-grid -->
+  </div>
+
+  <!-- ===== LINKEDIN ===== -->
+  <div class="section" id="sec-linkedin">
+    <h2 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">LinkedIn sin Premium — Guía completa</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Lo que puedes y no puedes hacer, y cómo sacarle el máximo.</p>
+
+    <div class="premium-compare">
+      <div class="pc-card yes">
+        <div class="pc-title">✅ Lo que SÍ puedes hacer gratis</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Invitaciones sin nota — ilimitadas</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> ~20 invitaciones con nota por mes</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Publicar contenido — alcance orgánico real</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Comentar en posts de otros — gratis y visible</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Mensajes directos a conexiones de 1er nivel</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Buscar por cargo, empresa, ubicación</div>
+        <div class="pc-item"><span class="pc-icon">✓</span> Ver quién vio tu perfil (últimos 5)</div>
+      </div>
+      <div class="pc-card no">
+        <div class="pc-title">❌ Lo que NO puedes sin Premium</div>
+        <div class="pc-item"><span class="pc-icon">✗</span> InMail a desconocidos (mensajes directos)</div>
+        <div class="pc-item"><span class="pc-icon">✗</span> Ver todos los que vieron tu perfil</div>
+        <div class="pc-item"><span class="pc-icon">✗</span> Búsqueda ilimitada de perfiles</div>
+        <div class="pc-item"><span class="pc-icon">✗</span> Notas largas de invitación</div>
+        <div class="pc-item"><span class="pc-icon">✗</span> Sales Navigator (filtros avanzados)</div>
+      </div>
+    </div>
+
+    <div class="info" style="margin-bottom:16px">💡 <strong>¿Vale la pena Premium ahora?</strong> No todavía. Tu problema actual no es falta de alcance — es falta de conversaciones. Premium ayuda cuando ya estás enviando 20+ mensajes/día y te quedas sin capacidad. Primero llena el CRM con 20 prospectos activos, luego evalúas.</div>
+
+    <h3 style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">Táctica semana a semana con cuenta gratuita</h3>
+    <div class="steps" style="margin-bottom:20px">
+      <div class="step"><span class="step-num">Lunes</span><span class="step-text"><strong>Publica un post</strong> sobre el problema (no sobre InsightsFlow). Termina con una pregunta abierta.</span></div>
+      <div class="step"><span class="step-num">Mar-Mié</span><span class="step-text"><strong>Envía 10 invitaciones SIN nota</strong> a perfiles relevantes. Busca: Contador, Gerente Financiero, CFO, Director Administrativo en Colombia.</span></div>
+      <div class="step"><span class="step-num">Jue</span><span class="step-text"><strong>Revisa aceptaciones</strong> y envía el mensaje post-conexión (espera 6-12h). Responde comentarios del post del lunes.</span></div>
+      <div class="step"><span class="step-num">Vier</span><span class="step-text"><strong>Comenta en 5 posts</strong> de contadores o empresarios colombianos. Comentarios útiles, no genéricos.</span></div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;color:#fff;margin-bottom:12px">Las 2 invitaciones con nota que te quedan este mes — úsalas así</h3>
+    <div class="info" style="margin-bottom:12px">Guárdalas para perfiles de alto valor: un contador con muchos clientes Siigo, o un empresario exactamente en tu segmento.</div>
+    <div class="tpl-label">Nota de invitación de alto valor (contador con muchos clientes)</div>
+    <div class="tpl-box" style="position:relative">Hola [Nombre]. Vi tu perfil y veo que manejas clientes en Siigo. Desarrollé una herramienta complementaria que genera dashboards ejecutivos desde Siigo automáticamente. Me gustaría conectar.<button class="copy-btn" onclick="copyTpl(this)">Copiar</button></div>
+
+    <h3 style="font-size:14px;font-weight:700;color:#fff;margin:20px 0 12px">Ideas de contenido LinkedIn — 4 semanas</h3>
+    <div class="steps">
+      <div class="step"><span class="step-num">Sem 1</span><span class="step-text"><strong>El problema:</strong> "¿Por qué la mayoría de PYMEs colombianas toman decisiones sin datos en tiempo real?"</span></div>
+      <div class="step"><span class="step-num">Sem 2</span><span class="step-text"><strong>La historia:</strong> "Cómo nació InsightsFlow — el problema que tuve en Binaria Media Group con Siigo."</span></div>
+      <div class="step"><span class="step-num">Sem 3</span><span class="step-text"><strong>El resultado:</strong> "Antes tardaba X horas en saber el estado de cartera. Hoy: 30 segundos."</span></div>
+      <div class="step"><span class="step-num">Sem 4</span><span class="step-text"><strong>El llamado:</strong> "Busco 5 empresas que usen Siigo para una demo gratuita. ¿Conoces alguna?"</span></div>
+    </div>
+  </div>
+
+  <!-- ===== SEMANA ===== -->
+  <div class="section" id="sec-semana">
+    <h2 style="font-size:16px;font-weight:700;color:#fff;margin-bottom:6px">Plan semana a semana</h2>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:20px">Haz clic en cada día para ver las tareas.</p>
+
+    <div class="week-grid" id="weekGrid"></div>
+    <div id="dayDetail" class="day-detail"></div>
+
+    <div class="meta-banner">
+      <div class="meta-title">🎯 Meta de la primera semana</div>
+      <div class="meta-nums">
+        <div class="meta-num"><div class="meta-n">10</div><div class="meta-l">Mensajes WhatsApp</div></div>
+        <div class="meta-num"><div class="meta-n">20</div><div class="meta-l">Conexiones LinkedIn</div></div>
+        <div class="meta-num"><div class="meta-n">2</div><div class="meta-l">Posts publicados</div></div>
+        <div class="meta-num"><div class="meta-n">3</div><div class="meta-l">Grupos unidos</div></div>
+        <div class="meta-num"><div class="meta-n">2</div><div class="meta-l">Demos agendadas</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CRM ===== -->
+  <div class="section" id="sec-crm">
+    <div class="crm-toolbar">
+      <button class="crm-add-btn" onclick="toggleForm()">+ Agregar prospecto</button>
+      <button class="filter-pill" onclick="loadContacts()" title="Recargar desde Sheets">🔄</button>
+      <span id="crmStatus" style="font-size:12px;color:#94a3b8;margin-left:4px"></span>
+      <button class="filter-pill active" onclick="filterBy('Todos',this)">Todos</button>
+      <button class="filter-pill" onclick="filterBy('Pendiente',this)">Pendiente</button>
+      <button class="filter-pill" onclick="filterBy('Contactado',this)">Contactado</button>
+      <button class="filter-pill" onclick="filterBy('Respondió',this)">Respondió</button>
+      <button class="filter-pill" onclick="filterBy('Demo agendada',this)">Demo</button>
+      <button class="filter-pill" onclick="filterBy('Cliente',this)">Cliente</button>
+    </div>
+
+    <div class="crm-form" id="crmForm">
+      <div class="crm-form-title" id="formTitle">Nuevo prospecto</div>
+      <div class="form-grid">
+        <div class="form-field"><label>Nombre *</label><input id="fNombre" placeholder="María González"/></div>
+        <div class="form-field"><label>Empresa</label><input id="fEmpresa" placeholder="Contadores XYZ"/></div>
+        <div class="form-field">
+          <label>Canal</label>
+          <select id="fCanal">
+            <option>WhatsApp</option><option>LinkedIn</option><option>Correo</option>
+            <option>Facebook</option><option>Llamada</option><option>Referido</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Perfil</label>
+          <select id="fPerfil">
+            <option>Contador / Financiero</option><option>Empresario / Gerente</option>
+            <option>CFO / Director Adm.</option><option>Revisor Fiscal</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Estado</label>
+          <select id="fEstado">
+            <option>Pendiente</option><option>Contactado</option><option>Respondió</option>
+            <option>Demo agendada</option><option>Demo hecha</option><option>Cliente</option><option>No interesado</option>
+          </select>
+        </div>
+        <div class="form-field"><label>Teléfono / WhatsApp</label><input id="fTelefono" placeholder="+57 300 000 0000"/></div>
+        <div class="form-field"><label>Correo electrónico</label><input id="fCorreo" placeholder="maria@empresa.com" type="email"/></div>
+        <div class="form-field full"><label>Nota</label><input id="fNota" placeholder="Usa Siigo hace 3 años, interesado en cartera..."/></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-save" onclick="saveContact()">Guardar</button>
+        <button class="btn-cancel" onclick="toggleForm(true)">Cancelar</button>
+      </div>
+    </div>
+
+    <div class="contact-list" id="contactList"></div>
+  </div>
+
+</div><!-- wrap -->
+
+<script>
+// ---- NAV ----
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ---- CANALES ----
+function toggleCanal(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ---- COPY ----
+function copyTpl(btn) {
+  const box = btn.parentElement;
+  const text = box.childNodes[0].textContent.trim();
+  navigator.clipboard.writeText(text).catch(()=>{});
+  btn.textContent = '✓ Copiado';
+  btn.classList.add('ok');
+  setTimeout(() => { btn.textContent = 'Copiar'; btn.classList.remove('ok'); }, 2000);
+}
+
+// ---- SEMANA ----
+const DAYS = [
+  { label: 'Lunes', icon: '🎯', title: 'Lista y mensajes listos', tasks: [
+    'Escribe 10 nombres de contactos en WhatsApp (contadores, empresarios, colegas, clientes anteriores).',
+    'Envía los 10 mensajes de WhatsApp con la plantilla de red cercana.',
+    'Publica el Post #1 en LinkedIn (el del problema).',
+    'Únete a 2-3 grupos de Facebook de contadores Colombia.',
+  ]},
+  { label: 'Martes', icon: '📬', title: 'LinkedIn + grupos', tasks: [
+    'Envía 10 invitaciones SIN nota en LinkedIn (contador, gerente, CFO Colombia).',
+    'Comenta en 3 posts de contadores colombianos — comentarios útiles de 2-3 líneas.',
+    'Publica en 1 grupo de Facebook el mensaje de contadores.',
+    'Registra en el CRM cada prospecto contactado.',
+  ]},
+  { label: 'Miércoles', icon: '🔁', title: 'Seguimiento activo', tasks: [
+    'Revisa quién aceptó en LinkedIn ayer y envía mensaje post-aceptación (espera 6h).',
+    'Seguimiento a quien no respondió en WhatsApp (mensaje corto).',
+    'Envía 10 invitaciones nuevas en LinkedIn.',
+    'Responde comentarios del post de LinkedIn — prioridad máxima.',
+  ]},
+  { label: 'Jueves', icon: '📅', title: 'Demos y propuestas', tasks: [
+    'Para quien mostró interés: propón la demo. Comparte link de Calendly.',
+    'Publica Post #2 en LinkedIn (el del resultado).',
+    'Identifica 1-2 contadores para proponer el esquema de aliado.',
+    'Registra objeciones que surjan — son oro para mejorar el mensaje.',
+  ]},
+  { label: 'Viernes', icon: '📊', title: 'Revisión semanal', tasks: [
+    'Cuenta: mensajes enviados / respuestas / demos agendadas.',
+    '¿Qué mensaje tuvo mejor respuesta? Anótalo y ajusta el que funcionó menos.',
+    'Prepara las invitaciones y mensajes de la semana siguiente.',
+    'Celebra cualquier demo lograda — ya es un hito.',
+  ]},
+];
+
+function buildWeek() {
+  const g = document.getElementById('weekGrid');
+  DAYS.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    card.innerHTML = `<div class="day-icon">${d.icon}</div><div class="day-label">${d.label}</div><div class="day-title">${d.title}</div>`;
+    card.onclick = () => showDay(i);
+    g.appendChild(card);
+  });
+}
+
+function showDay(i) {
+  const cards = document.querySelectorAll('.day-card');
+  cards.forEach((c,j) => c.classList.toggle('sel', j===i));
+  const d = DAYS[i];
+  const det = document.getElementById('dayDetail');
+  det.innerHTML = `<div class="day-detail-title">${d.icon} ${d.label} — ${d.title}</div>` +
+    d.tasks.map(t => `<div class="task-item"><span class="task-check">◎</span><span>${t}</span></div>`).join('');
+  det.classList.add('show');
+}
+
+buildWeek();
+
+// ---- CRM — Google Sheets via JSONP (funciona desde file://) ----
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3dKo8XSFTgmqu3YEln54knUesE37h5710ORFIHASPmuM2r3LFEbSIGkgYUdE00t0kQA/exec';
+
+const ESTADO_COLORS = {
+  'Pendiente':      '#64748b',
+  'Contactado':     '#3b82f6',
+  'Respondió':      '#8b5cf6',
+  'Demo agendada':  '#f59e0b',
+  'Demo hecha':     '#06b6d4',
+  'Cliente':        '#22c55e',
+  'No interesado':  '#ef4444',
+};
+
+let contacts  = [];
+let editId    = null;
+let filterState = 'Todos';
+let formOpen  = false;
+let saving    = false;
+
+// ---- helpers UI ----
+function setStatus(msg, color) {
+  const el = document.getElementById('crmStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = color || '#94a3b8';
+}
+function updateStats() {
+  document.getElementById('sTotal').textContent       = contacts.length;
+  document.getElementById('sContactados').textContent = contacts.filter(c => (c.Estado||c.estado) !== 'Pendiente').length;
+  document.getElementById('sDemos').textContent       = contacts.filter(c => ['Demo agendada','Demo hecha'].includes(c.Estado||c.estado)).length;
+  document.getElementById('sClientes').textContent    = contacts.filter(c => (c.Estado||c.estado) === 'Cliente').length;
+}
+function g(id) { return document.getElementById(id); }
+function val(id) { return g(id).value.trim(); }
+
+// ---- render ----
+function renderContacts() {
+  const list     = g('contactList');
+  const filtered = filterState === 'Todos' ? contacts : contacts.filter(c => (c.Estado||c.estado) === filterState);
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty-state">No hay prospectos en esta etapa todavía.</div>';
+    updateStats(); return;
+  }
+  list.innerHTML = filtered.map(c => {
+    const id       = c.ID       || c.id       || '';
+    const nombre   = c.Nombre   || c.nombre   || '';
+    const emp      = c.Empresa  || c.empresa  || '—';
+    const perfil   = c.Perfil   || c.perfil   || '';
+    const canal    = c.Canal    || c.canal    || '';
+    const estado   = c.Estado   || c.estado   || '';
+    const nota     = c.Nota     || c.nota     || '';
+    const telefono = c.Telefono || c.telefono || '';
+    const correo   = c.Correo   || c.correo   || '';
+    const col      = ESTADO_COLORS[estado] || '#64748b';
+    const telLink  = telefono ? `<a href="https://wa.me/${telefono.replace(/\D/g,'')}" target="_blank" style="color:#25D366;text-decoration:none;font-size:12px">📱 ${telefono}</a>` : '';
+    const mailLink = correo   ? `<a href="mailto:${correo}" style="color:#3b82f6;text-decoration:none;font-size:12px">✉️ ${correo}</a>` : '';
+    return `
+    <div class="contact-row">
+      <div style="flex:1;min-width:160px">
+        <div class="contact-name">${nombre}</div>
+        <div class="contact-meta">${emp} · ${perfil}</div>
+        ${(telLink||mailLink) ? `<div style="display:flex;gap:12px;margin-top:4px;flex-wrap:wrap">${telLink}${mailLink}</div>` : ''}
+      </div>
+      <div class="contact-right">
+        <span class="pill-canal">${canal}</span>
+        <span class="pill-estado" style="background:${col}22;color:${col}">${estado}</span>
+        <button class="btn-edit" onclick="startEdit('${id}')">Editar</button>
+        <button class="btn-del"  onclick="deleteContact('${id}')">✕</button>
+      </div>
+      ${nota ? `<div class="contact-note">📝 ${nota}</div>` : ''}
+    </div>`;
+  }).join('');
+  updateStats();
+}
+
+// ---- JSONP helper — reemplazado por fetch (funciona desde https://) ----
+
+async function apiFetch(params, retries) {
+  retries = retries === undefined ? 2 : retries;
+  const qs  = Object.entries({ ...params, _t: Date.now() })
+    .map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+    .join('&');
+  const url = SCRIPT_URL + '?' + qs;
+  try {
+    const res  = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    return JSON.parse(text);
+  } catch(e) {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, 1500));
+      return apiFetch(params, retries - 1);
+    }
+    throw e;
+  }
+}
+
+// ---- API calls ----
+async function loadContacts() {
+  setStatus('⏳ Cargando...', '#f59e0b');
+  try {
+    const data = await apiFetch({ action: 'get' });
+    contacts = Array.isArray(data) ? data : [];
+    renderContacts();
+    setStatus('✅ Sincronizado con Google Sheets', '#22c55e');
+    setTimeout(() => setStatus(''), 3000);
+  } catch(e) {
+    const el = document.getElementById('crmStatus');
+    if (el) {
+      el.innerHTML = '❌ Error de conexión &nbsp;<button onclick="loadContacts()" style="background:#3b82f6;color:#fff;border:none;border-radius:5px;padding:2px 10px;font-size:11px;cursor:pointer;font-family:inherit">Reintentar</button>';
+      el.style.color = '#ef4444';
+    }
+  }
+}
+
+async function sheetAction(params) {
+  return apiFetch(params);
+}
+
+// ---- Form ----
+function toggleForm(hide) {
+  formOpen = hide ? false : !formOpen;
+  g('crmForm').classList.toggle('show', formOpen);
+  if (!formOpen) { editId = null; clearForm(); g('formTitle').textContent = 'Nuevo prospecto'; }
+}
+function clearForm() {
+  ['fNombre','fEmpresa','fNota','fTelefono','fCorreo'].forEach(id => g(id).value = '');
+  g('fCanal').value  = 'WhatsApp';
+  g('fPerfil').value = 'Contador / Financiero';
+  g('fEstado').value = 'Pendiente';
+}
+
+async function saveContact() {
+  const nombre = val('fNombre');
+  if (!nombre || saving) return;
+  saving = true;
+  const btn = document.querySelector('.btn-save');
+  btn.textContent = 'Guardando...'; btn.disabled = true;
+
+  const id  = editId || Date.now().toString();
+  const obj = {
+    id, ID: id,
+    nombre, Nombre: nombre,
+    empresa: val('fEmpresa'), Empresa: val('fEmpresa'),
+    canal:   g('fCanal').value,  Canal:   g('fCanal').value,
+    perfil:  g('fPerfil').value, Perfil:  g('fPerfil').value,
+    estado:  g('fEstado').value, Estado:  g('fEstado').value,
+    nota:    val('fNota'),       Nota:    val('fNota'),
+    telefono: val('fTelefono'),  Telefono: val('fTelefono'),
+    correo:   val('fCorreo'),    Correo:   val('fCorreo'),
+  };
+
+  try {
+    await sheetAction({ action: editId ? 'update' : 'add', ...obj });
+    if (editId) contacts = contacts.map(c => String(c.ID||c.id) === String(editId) ? obj : c);
+    else contacts.push(obj);
+    renderContacts();
+    setStatus('✅ Guardado en Google Sheets', '#22c55e');
+    setTimeout(() => setStatus(''), 3000);
+  } catch(e) {
+    setStatus('❌ Error al guardar', '#ef4444');
+  }
+  btn.textContent = 'Guardar'; btn.disabled = false;
+  saving = false;
+  toggleForm(true);
+}
+
+function startEdit(id) {
+  const c = contacts.find(x => String(x.ID||x.id) === String(id));
+  if (!c) return;
+  editId = String(c.ID||c.id);
+  g('fNombre').value   = c.Nombre  ||c.nombre  ||'';
+  g('fEmpresa').value  = c.Empresa ||c.empresa ||'';
+  g('fCanal').value    = c.Canal   ||c.canal   ||'WhatsApp';
+  g('fPerfil').value   = c.Perfil  ||c.perfil  ||'Contador / Financiero';
+  g('fEstado').value   = c.Estado  ||c.estado  ||'Pendiente';
+  g('fNota').value     = c.Nota    ||c.nota    ||'';
+  g('fTelefono').value = c.Telefono||c.telefono||'';
+  g('fCorreo').value   = c.Correo  ||c.correo  ||'';
+  g('formTitle').textContent = 'Editar prospecto';
+  g('crmForm').classList.add('show');
+  formOpen = true;
+}
+
+async function deleteContact(id) {
+  if (!confirm('¿Eliminar este prospecto de Google Sheets?')) return;
+  try {
+    await sheetAction({ action: 'delete', id });
+    contacts = contacts.filter(c => String(c.ID||c.id) !== String(id));
+    renderContacts();
+    setStatus('🗑️ Eliminado', '#94a3b8');
+    setTimeout(() => setStatus(''), 2000);
+  } catch(e) {
+    setStatus('❌ Error al eliminar', '#ef4444');
+  }
+}
+
+function filterBy(estado, btn) {
+  filterState = estado;
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  renderContacts();
+}
+
+loadContacts();
+</script>
+</body>
+</html>
