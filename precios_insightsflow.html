@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>InsightsFlow — Planes y Tarifas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy:       #0D1B2E;
+    --navy-mid:   #0F2442;
+    --navy-light: #1A3A5C;
+    --blue:       #2563EB;
+    --blue-bright:#3B82F6;
+    --blue-glow:  rgba(37,99,235,0.25);
+    --mint:       #10B981;
+    --orange:     #F59E0B;
+    --red:        #EF4444;
+    --white:      #FFFFFF;
+    --gray-100:   #E2E8F0;
+    --gray-400:   #94A3B8;
+    --gray-600:   #64748B;
+    --ff: 'Inter', sans-serif;
+    --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-xl: 28px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:var(--ff); background:var(--navy); color:var(--white);
+    background-image: radial-gradient(circle, rgba(37,99,235,0.12) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:48px 48px 64px;}
+
+  .nav-logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:44px;}
+  .logo-icon{display:flex;align-items:flex-end;gap:3px;height:22px;}
+  .logo-icon span{display:block;border-radius:3px;width:5px;}
+  .logo-icon .b1{height:10px;background:#60A5FA;}
+  .logo-icon .b2{height:16px;background:#3B82F6;}
+  .logo-icon .b3{height:22px;background:#2563EB;}
+  .logo-icon .b4{height:14px;background:#7C3AED;}
+
+  .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.4);border-radius:50px;padding:6px 14px;font-size:0.75rem;font-weight:600;color:var(--blue-bright);letter-spacing:0.04em;width:fit-content;margin-bottom:18px;}
+  .badge-dot{width:6px;height:6px;background:var(--mint);border-radius:50%;}
+  h1{font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:800;line-height:1.12;letter-spacing:-0.03em;color:var(--white);max-width:680px;margin-bottom:16px;}
+  h1 .hl{color:var(--blue-bright);}
+  .hero-sub{font-size:0.98rem;color:var(--gray-400);line-height:1.7;max-width:600px;}
+  .hero-sub strong{color:var(--blue-bright);font-weight:600;}
+
+  .section-eyebrow{font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue-bright);margin-bottom:12px;}
+  .track{margin-top:56px;}
+  .track-label{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .track-pill{display:inline-flex;align-items:center;gap:6px;border-radius:50px;padding:5px 14px;font-size:0.72rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;}
+  .track-pill.siigo{background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.4);color:var(--blue-bright);}
+  .track-pill.alegra{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:var(--mint);}
+  .track-line{flex:1;height:1px;background:rgba(255,255,255,0.08);}
+  .track-note{font-size:0.85rem;color:var(--gray-400);margin-bottom:22px;line-height:1.6;}
+
+  .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .plan-card{background:var(--navy-mid);border:1px solid rgba(37,99,235,0.2);border-radius:var(--r-xl);padding:30px 26px;display:flex;flex-direction:column;gap:18px;position:relative;}
+  .plan-card.featured{border-color:var(--blue);background:linear-gradient(160deg, rgba(37,99,235,0.12), rgba(15,36,66,0.95));box-shadow:0 0 0 1px rgba(37,99,235,0.3), 0 24px 60px rgba(37,99,235,0.15);}
+  .plan-badge-popular{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 14px;border-radius:50px;white-space:nowrap;}
+
+  .plan-header{display:flex;flex-direction:column;gap:8px;}
+  .plan-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:2px;}
+  .plan-icon.op{background:rgba(37,99,235,0.15);border:1px solid rgba(37,99,235,0.3);}
+  .plan-icon.fin{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);}
+  .plan-icon.exe{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);}
+  .plan-icon.aleg{background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.3);}
+
+  .plan-name{font-size:1.1rem;font-weight:800;color:var(--white);letter-spacing:-0.02em;}
+  .siigo-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.3);border-radius:50px;padding:4px 12px;font-size:0.68rem;font-weight:600;color:var(--blue-bright);width:fit-content;}
+  .alegra-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.35);border-radius:50px;padding:4px 12px;font-size:0.68rem;font-weight:600;color:var(--mint);width:fit-content;}
+
+  .plan-price{font-size:1.9rem;font-weight:800;letter-spacing:-0.02em;display:flex;align-items:baseline;gap:6px;color:var(--white);}
+  .plan-price small{font-family:var(--ff);font-weight:500;font-size:0.8rem;color:var(--gray-400);}
+  .iva-note{font-size:0.72rem;color:var(--gray-600);margin-top:-12px;}
+  .reportcount{font-size:0.82rem;font-weight:600;color:var(--white);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:8px 10px;width:fit-content;}
+
+  .plan-divider{height:1px;background:rgba(37,99,235,0.15);}
+  .plan-features{display:flex;flex-direction:column;gap:10px;flex:1;}
+  .plan-feat{display:flex;align-items:flex-start;gap:10px;font-size:0.83rem;color:var(--gray-400);line-height:1.45;}
+  .plan-feat-check{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;margin-top:1px;}
+  .plan-feat-check.blue{background:rgba(37,99,235,0.18);border:1px solid rgba(37,99,235,0.35);color:var(--blue-bright);}
+  .plan-feat-check.purple{background:rgba(124,58,237,0.18);border:1px solid rgba(124,58,237,0.35);color:#A78BFA;}
+  .plan-feat-check.green{background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.35);color:var(--mint);}
+  .plan-feat.muted{color:var(--gray-600);font-style:italic;}
+  .plan-feat.muted .plan-feat-check{border-color:rgba(255,255,255,0.12);background:transparent;color:var(--gray-600);}
+
+  .plan-cta{width:100%;padding:12px;border-radius:10px;font-family:var(--ff);font-size:0.87rem;font-weight:600;cursor:pointer;transition:background 0.15s;text-align:center;text-decoration:none;display:block;}
+  .plan-cta.ghost-btn{background:transparent;color:var(--blue-bright);border:1px solid rgba(37,99,235,0.45);}
+  .plan-cta.blue-btn{background:var(--blue);color:#fff;border:none;}
+  .plan-cta.green-btn{background:var(--mint);color:var(--navy);border:none;}
+  .plan-impl{font-size:0.76rem;color:var(--gray-400);text-align:center;margin-top:-6px;}
+  .plan-impl b{color:var(--white);}
+
+  .alegra-card{background:linear-gradient(160deg, rgba(16,185,129,0.10), rgba(15,36,66,0.95));border:1px solid rgba(16,185,129,0.35);border-radius:var(--r-xl);padding:32px 30px;display:grid;grid-template-columns:1fr 1.3fr auto;gap:32px;align-items:center;}
+  .alegra-left{display:flex;flex-direction:column;gap:10px;}
+  .alegra-mid ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+  .alegra-mid li{font-size:0.83rem;color:var(--gray-400);line-height:1.45;display:flex;gap:9px;align-items:flex-start;}
+  .alegra-mid li .dot{width:16px;height:16px;flex-shrink:0;border-radius:50%;background:rgba(16,185,129,0.18);border:1px solid rgba(16,185,129,0.35);color:var(--mint);display:flex;align-items:center;justify-content:center;font-size:0.55rem;margin-top:2px;}
+  .alegra-mid li.warn .dot{background:rgba(245,158,11,0.16);border-color:rgba(245,158,11,0.4);color:var(--orange);}
+  .alegra-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right;}
+
+  .footnotes{margin-top:18px;display:flex;flex-direction:column;gap:6px;}
+  .footnotes p{font-size:0.76rem;color:var(--gray-600);line-height:1.6;}
+  .footnotes b{color:var(--gray-400);}
+
+  .grid3{display:grid;grid-template-columns:1fr 1.3fr;gap:18px;margin-top:56px;}
+  .box{background:var(--navy-mid);border:1px solid rgba(37,99,235,0.18);border-radius:var(--r-lg);padding:26px;}
+  .box h4{font-size:0.95rem;font-weight:700;margin-bottom:16px;color:var(--white);}
+  .included-list .row{display:flex;justify-content:space-between;font-size:0.88rem;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+  .included-list .row:last-child{border-bottom:none;}
+  .included-list .row span:first-child{color:var(--gray-400);}
+  .included-list .row span:last-child{font-weight:700;color:var(--white);}
+
+  table.addons{width:100%;border-collapse:collapse;font-size:0.85rem;}
+  table.addons td{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);color:var(--gray-100);}
+  table.addons tr:last-child td{border-bottom:none;}
+  table.addons td:last-child{text-align:right;font-weight:700;color:var(--white);}
+
+  .nomina-note{margin-top:18px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:var(--r-md);padding:16px 18px;display:flex;gap:12px;align-items:flex-start;}
+  .nomina-note .ic{font-size:1.1rem;flex-shrink:0;}
+  .nomina-note p{font-size:0.83rem;color:var(--gray-400);line-height:1.6;}
+  .nomina-note strong{color:var(--orange);}
+
+  .periods{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:56px;}
+  .period{background:var(--navy-mid);border:1px solid rgba(37,99,235,0.18);border-radius:var(--r-md);padding:18px;text-align:center;}
+  .period .p-name{font-size:0.82rem;color:var(--gray-400);margin-bottom:6px;}
+  .period .p-disc{font-size:1.5rem;font-weight:800;color:var(--blue-bright);}
+  .period.zero .p-disc{color:var(--gray-600);}
+
+  .promo{margin-top:56px;background:linear-gradient(135deg, rgba(37,99,235,0.15), rgba(16,185,129,0.1));border:1px solid rgba(37,99,235,0.3);border-radius:var(--r-lg);padding:28px 30px;display:flex;justify-content:space-between;align-items:center;gap:24px;}
+  .promo h4{font-size:1.05rem;font-weight:800;margin-bottom:6px;color:var(--white);}
+  .promo p{font-size:0.85rem;color:var(--gray-400);max-width:480px;line-height:1.55;}
+  .promo .promo-badge{font-size:1.6rem;font-weight:800;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:12px 20px;white-space:nowrap;color:var(--white);text-align:center;line-height:1.3;}
+
+  footer{margin-top:56px;border-top:1px solid rgba(37,99,235,0.15);padding-top:28px;display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;}
+  .footer-logo{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:700;color:var(--white);margin-bottom:10px;}
+  .contact p{font-size:0.85rem;color:var(--gray-400);margin-bottom:4px;}
+  .contact a{color:var(--blue-bright);text-decoration:none;}
+  .fine{font-size:0.74rem;color:var(--gray-600);max-width:420px;line-height:1.6;text-align:right;}
+
+  @media (max-width:960px){
+    .pricing-grid{grid-template-columns:1fr 1fr;}
+    .alegra-card{grid-template-columns:1fr;text-align:left;}
+    .alegra-right{align-items:flex-start;text-align:left;}
+    .grid3{grid-template-columns:1fr;}
+    .periods{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:620px){
+    .wrap{padding:32px 20px 48px;}
+    .pricing-grid{grid-template-columns:1fr;}
+    footer{flex-direction:column;}
+    .fine{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:44px;flex-wrap:wrap;gap:12px;">
+    <a href="index.html" class="nav-logo" style="text-decoration:none;margin-bottom:0;">
+      <div class="logo-icon"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>
+      InsightsFlow
+    </a>
+    <a href="index.html" style="font-size:0.82rem;color:var(--gray-400);text-decoration:none;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 14px;">← Volver al sitio</a>
+  </div>
+
+  <div class="badge"><span class="badge-dot"></span>Tarifas oficiales 2026</div>
+  <h1>Planes y tarifas de <span class="hl">InsightsFlow</span></h1>
+  <p class="hero-sub">Convierte lo que ya registras en <strong>Siigo Nube</strong> o <strong>Alegra</strong> en dashboards ejecutivos listos, sin exportar Excel ni esperar al cierre del mes. Elige el paquete según lo que tu empresa necesita ver.</p>
+
+  <div class="track">
+    <div class="track-label">
+      <span class="track-pill siigo">🔗 Integración con Software Siigo Nube</span>
+      <div class="track-line"></div>
+    </div>
+    <p class="track-note">Estos 3 paquetes aplican <strong style="color:var(--blue-bright);">únicamente</strong> para empresas que llevan su contabilidad en Siigo Nube. Elige el nivel según lo que tu equipo necesita ver.</p>
+
+    <div class="pricing-grid">
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-icon op">📊</div>
+          <div class="plan-name">Operativo</div>
+          <span class="siigo-tag">🔗 Solo clientes Siigo Nube</span>
+        </div>
+        <div class="plan-price">$390.000<small>/mes</small></div>
+        <div class="iva-note">Precio antes de IVA</div>
+        <div class="reportcount">10 reportes incluidos</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Ventas: ingresos, por vendedor, por producto</span></div>
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Buscador inteligente de facturas</span></div>
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Facturación por cliente y cartera (CxC)</span></div>
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Compras, egresos y proveedores</span></div>
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Ingresos vs. egresos consolidado</span></div>
+          <div class="plan-feat"><div class="plan-feat-check blue">✓</div><span>Cruce DIAN vs. Siigo</span></div>
+          <div class="plan-feat muted"><div class="plan-feat-check">i</div><span>Costos de Nómina — solo si aplica*</span></div>
+        </div>
+        <a class="plan-cta ghost-btn" href="mailto:impocommercesas@gmail.com?subject=Quiero%20el%20plan%20Operativo%20de%20InsightsFlow">Solicitar este plan →</a>
+        <p class="plan-impl">Implementación: <b>$400.000</b> (pago único)</p>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-header">
+          <div class="plan-icon fin">📑</div>
+          <div class="plan-name">Financiero</div>
+          <span class="siigo-tag">🔗 Solo clientes Siigo Nube</span>
+        </div>
+        <div class="plan-price">$260.000<small>/mes</small></div>
+        <div class="iva-note">Precio antes de IVA</div>
+        <div class="reportcount">6 reportes incluidos</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Estado de Resultados (P&amp;G)</span></div>
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Balance General</span></div>
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Cruce de IVAs</span></div>
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Retenciones (Retefuente, ReteIVA, ReteICA)</span></div>
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Análisis de variación entre periodos</span></div>
+          <div class="plan-feat"><div class="plan-feat-check purple">✓</div><span>Indicadores financieros clave</span></div>
+        </div>
+        <a class="plan-cta blue-btn" href="mailto:impocommercesas@gmail.com?subject=Quiero%20el%20plan%20Financiero%20de%20InsightsFlow">Solicitar este plan →</a>
+        <p class="plan-impl">Implementación: <b>$200.000</b> (pago único)</p>
+      </div>
+
+      <div class="plan-card featured">
+        <div class="plan-badge-popular">El más completo</div>
+        <div class="plan-header">
+          <div class="plan-icon exe">🚀</div>
+          <div class="plan-name">Ejecutivo</div>
+          <span class="siigo-tag">🔗 Solo clientes Siigo Nube</span>
+        </div>
+        <div class="plan-price">$590.000<small>/mes</small></div>
+        <div class="iva-note">Precio antes de IVA</div>
+        <div class="reportcount">17 reportes incluidos</div>
+        <div class="plan-divider"></div>
+        <div class="plan-features">
+          <div class="plan-feat"><div class="plan-feat-check green">✓</div><span>Todo lo de Operativo + Financiero</span></div>
+          <div class="plan-feat"><div class="plan-feat-check green">✓</div><span>Resumen Ejecutivo Inteligente</span></div>
+          <div class="plan-feat"><div class="plan-feat-check green">✓</div><span>KPIs estrella, caja disponible y cash runway</span></div>
+          <div class="plan-feat muted"><div class="plan-feat-check">i</div><span>Costos de Nómina — solo si aplica*</span></div>
+        </div>
+        <a class="plan-cta blue-btn" href="mailto:impocommercesas@gmail.com?subject=Quiero%20el%20plan%20Ejecutivo%20de%20InsightsFlow">Solicitar este plan →</a>
+        <p class="plan-impl">Implementación: <b>$550.000</b> (pago único)</p>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="track">
+    <div class="track-label">
+      <span class="track-pill alegra">🔗 Integración con Software Alegra</span>
+      <div class="track-line"></div>
+    </div>
+    <p class="track-note">Para empresas que llevan su contabilidad en <strong style="color:var(--mint);">Alegra</strong>, InsightsFlow ofrece un único paquete — completo, sin necesidad de elegir módulos por separado.</p>
+
+    <div class="alegra-card">
+      <div class="alegra-left">
+        <div class="plan-icon aleg">◆</div>
+        <div class="plan-name">Alegra</div>
+        <span class="alegra-tag">🔗 Solo clientes Alegra</span>
+        <div class="plan-price">$590.000<small>/mes</small></div>
+        <div class="iva-note">Precio antes de IVA</div>
+        <div class="reportcount">17 reportes incluidos</div>
+      </div>
+      <div class="alegra-mid">
+        <ul>
+          <li><span class="dot">✓</span>El mismo set completo de reportes que el plan Ejecutivo</li>
+          <li><span class="dot">✓</span>Ventas, compras, cartera y contable</li>
+          <li><span class="dot">✓</span>Resumen Ejecutivo incluido</li>
+          <li class="warn"><span class="dot">!</span>Requiere plan de cuentas <strong style="color:var(--white);">codificado (PUC)</strong> — catálogos NIIF sin código aún no soportados**</li>
+        </ul>
+      </div>
+      <div class="alegra-right">
+        <a class="plan-cta green-btn" href="mailto:impocommercesas@gmail.com?subject=Quiero%20el%20plan%20Alegra%20de%20InsightsFlow" style="width:180px;">Solicitar este plan →</a>
+        <p class="plan-impl">Implementación: <b>$600.000</b> (pago único)</p>
+      </div>
+    </div>
+
+    <div class="footnotes">
+      <p><b>* Sobre Costos de Nómina:</b> aplica solo si la estructura de nómina de tu empresa es compatible con el módulo. Se confirma durante la implementación, sin costo adicional cuando aplica — no está garantizado para todas las empresas.</p>
+      <p><b>** Sobre el catálogo Alegra:</b> hoy solo integramos cuentas con plan de cuentas codificado (PUC). Si tu cuenta usa NIIF sin código, escríbenos antes de contratar para validar tu caso — puede requerir un análisis previo.</p>
+    </div>
+  </div>
+
+  <div class="grid3">
+    <div class="box">
+      <h4>Incluido en todos los planes</h4>
+      <div class="included-list">
+        <div class="row"><span>Usuarios</span><span>3</span></div>
+        <div class="row"><span>Conexiones concurrentes</span><span>3</span></div>
+        <div class="row"><span>Almacenamiento</span><span>200 MB</span></div>
+      </div>
+    </div>
+    <div class="box">
+      <h4>Adicionales (si los necesitas)</h4>
+      <table class="addons">
+        <tr><td>1 usuario adicional</td><td>$10.000/mes</td></tr>
+        <tr><td>1 conexión concurrente adicional</td><td>$15.000/mes</td></tr>
+        <tr><td>Paquete de 5 usuarios adicionales</td><td>$40.000/mes</td></tr>
+        <tr><td>Paquete de 5 conexiones adicionales</td><td>$60.000/mes</td></tr>
+      </table>
+      <div class="nomina-note">
+        <span class="ic">⚠️</span>
+        <p><strong>Costos de Nómina no es un adicional pago.</strong> Va incluido dentro de Operativo y Ejecutivo (Siigo), pero solo se activa si tu estructura de nómina es compatible con el módulo — lo validamos contigo antes de implementar. No aplica para Alegra.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-eyebrow" style="margin-top:56px;">Descuento por periodicidad de pago</p>
+  <div class="periods">
+    <div class="period zero"><div class="p-name">Mensual</div><div class="p-disc">0%</div></div>
+    <div class="period"><div class="p-name">Trimestral</div><div class="p-disc">2%</div></div>
+    <div class="period"><div class="p-name">Semestral</div><div class="p-disc">4%</div></div>
+    <div class="period"><div class="p-name">Anual</div><div class="p-disc">8%</div></div>
+  </div>
+
+  <div class="promo">
+    <div>
+      <h4>Promo Early Adopters</h4>
+      <p>20% de descuento sobre plan + adicionales en tu primer mes, y 20% de descuento sobre la implementación. <strong style="color:var(--white);">Válida solo para empresas que se inscriban hasta el 30 de septiembre de 2026.</strong></p>
+    </div>
+    <div class="promo-badge">-20%<br><span style="font-size:0.62rem;font-weight:600;color:var(--gray-400);letter-spacing:0.02em;">hasta 30 sep</span></div>
+  </div>
+
+  <footer>
+    <div>
+      <div class="footer-logo">
+        <div class="logo-icon"><span class="b1"></span><span class="b2"></span><span class="b3"></span><span class="b4"></span></div>
+        InsightsFlow
+      </div>
+      <div class="contact">
+        <p><strong style="color:var(--white);">Impocommerce SAS</strong></p>
+        <p><a href="mailto:impocommercesas@gmail.com">impocommercesas@gmail.com</a></p>
+        <p><a href="tel:+573134880834">313 488 0834</a></p>
+      </div>
+    </div>
+    <div class="fine">
+      Todos los precios están expresados antes de IVA. Los descuentos por periodicidad aplican únicamente al valor del plan; los adicionales y la implementación no tienen descuento (salvo promoción vigente). Los planes trimestral, semestral y anual se cobran de contado por todo el periodo.
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
